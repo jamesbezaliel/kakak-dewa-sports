@@ -20,6 +20,7 @@ const PRODUCTS = [
     emoji: "🔫",
     desc: "Senapan PCP bolt action premium dengan tangki aluminium tebal dan finish kayu walnut asli. Akurasi konsisten, cocok untuk target shooting jarak menengah dan berburu.",
     images: ["Predator-OD-38-1", "Predator-OD-38-2", "Predator-OD-38-3"],
+    variantLabels: ["Merah", "Biru", "Orange"],
   },
   {
     id: 1,
@@ -89,11 +90,7 @@ const PRODUCTS = [
     berat: "3.1 kg",
     badge: "new",
     emoji: "💨",
-    images: [
-      "./assets/images/Predator-OD-38-1.png",
-      "./assets/images/Predator-OD-38-2.png",
-      "./assets/images/Predator-OD-38-3.png",
-    ], // ← slug foto varian
+    images: ["5-1", "5-2", "5-3"], // ← slug foto varian
     variantLabels: ["Hitam", "Coklat Walnut", "Putih"], // ← label tiap varian (opsional)
     desc: "Bocap premium buatan Jerman dengan standar kualitas tinggi. Shot-to-shot konsisten, daya tahan luar biasa untuk pemakaian bertahun-tahun.",
   },
@@ -739,7 +736,12 @@ const Carousel = ({ onOrder, onDetail }) => {
 
   return (
     <div
-      style={{ maxWidth: 1400, margin: "0 auto", padding: "3rem 2rem 1.5rem" }}
+      style={{
+        maxWidth: 1400,
+        margin: "0 auto",
+        padding: "3rem 2rem 1.5rem",
+        scrollMarginTop: 40,
+      }}
       id="best-seller"
     >
       <div
@@ -1041,8 +1043,8 @@ const ProductThumb = ({ p }) => {
     <div
       style={{
         width: "100%",
-        aspectRatio: "4/3",
-        background: "linear-gradient(135deg,#191919,#111)",
+        aspectRatio: "1/1",
+        background: err ? "linear-gradient(135deg,#191919,#111)" : "#f8f8f8",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -1051,27 +1053,29 @@ const ProductThumb = ({ p }) => {
         overflow: "hidden",
       }}
     >
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "radial-gradient(ellipse at 70% 30%,rgba(204,31,31,.07) 0%,transparent 60%)",
-        }}
-      />
       {err ? (
-        <span style={{ position: "relative", zIndex: 1 }}>{p.emoji}</span>
+        <>
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "radial-gradient(ellipse at 70% 30%,rgba(204,31,31,.07) 0%,transparent 60%)",
+            }}
+          />
+          <span style={{ position: "relative", zIndex: 1 }}>{p.emoji}</span>
+        </>
       ) : (
         <img
           src={`/products/${p.id}.${IMG_EXT}`}
           alt={p.name}
           onError={() => setErr(true)}
           style={{
-            position: "absolute",
-            inset: 0,
             width: "100%",
             height: "100%",
-            objectFit: "cover",
+            objectFit: "contain",
+            objectPosition: "center",
+            padding: "0.5rem",
             zIndex: 1,
           }}
         />
@@ -1136,11 +1140,13 @@ const ModalImageSlider = ({ p }) => {
           style={{
             width: "100%",
             height: "100%",
-            objectFit: "cover",
+            objectFit: "contain",
             objectPosition: "center",
             position: "relative",
             zIndex: 2,
             display: "block",
+            padding: "1rem",
+            backgroundColor: "#f1f1f1",
           }}
         />
       )}
@@ -1255,7 +1261,7 @@ const ModalImageSlider = ({ p }) => {
               style={{
                 fontFamily: "'DM Mono', monospace",
                 fontSize: ".65rem",
-                color: "#6e6b67",
+                color: "#f0ede8",
               }}
             >
               {idx + 1} / {total}
@@ -1282,7 +1288,7 @@ const ModalImageSlider = ({ p }) => {
                   width: i === idx ? 18 : 6,
                   height: 6,
                   borderRadius: 3,
-                  background: i === idx ? "#CC1F1F" : "rgba(255,255,255,.3)",
+                  background: i === idx ? "#CC1F1F" : "rgba(0, 0, 0, 0.55)",
                   border: "none",
                   cursor: "pointer",
                   padding: 0,
@@ -1453,7 +1459,12 @@ const Catalog = ({ onDetail }) => {
 
   return (
     <section
-      style={{ maxWidth: 1400, margin: "0 auto", padding: "3rem 2rem" }}
+      style={{
+        maxWidth: 1400,
+        margin: "0 auto",
+        padding: "3rem 2rem",
+        scrollMarginTop: 40,
+      }}
       id="katalog"
     >
       <style>{`
@@ -1629,6 +1640,14 @@ const Catalog = ({ onDetail }) => {
 
 // ── MODAL ─────────────────────────────────────────────────────────
 const Modal = ({ product, onClose }) => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
   useEffect(() => {
     if (product) document.body.style.overflow = "hidden";
     else document.body.style.overflow = "";
@@ -1650,94 +1669,109 @@ const Modal = ({ product, onClose }) => {
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(0,0,0,.9)",
-        backdropFilter: "blur(12px)",
+        background: "rgba(0,0,0,.92)",
+        backdropFilter: "blur(14px)",
         zIndex: 1000,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "1rem",
+        padding: isMobile ? "0" : "1rem",
         animation: "fadeIn .25s ease",
       }}
     >
-      <style>{`@keyframes fadeIn{from{opacity:0}to{opacity:1}} @keyframes slideUp{from{transform:translateY(24px) scale(.98)}to{transform:translateY(0) scale(1)}}`}</style>
+      <style>{`
+        @keyframes fadeIn  { from{opacity:0} to{opacity:1} }
+        @keyframes slideUp { from{transform:translateY(28px) scale(.97)} to{transform:translateY(0) scale(1)} }
+      `}</style>
 
       <div
         style={{
           background: "#111",
-          border: "1px solid #252525",
-          borderRadius: 16,
-          maxWidth: 820,
+          border: isMobile ? "none" : "1px solid #252525",
+          borderRadius: isMobile ? "20px 20px 0 0" : 16,
           width: "100%",
-          maxHeight: "90vh",
+          maxWidth: 980,
+          maxHeight: isMobile ? "95vh" : "90vh",
           overflowY: "auto",
-          position: "relative",
+          position: isMobile ? "fixed" : "relative",
+          bottom: isMobile ? 0 : "auto",
+          display: "flex",
+          flexDirection: isMobile ? "column" : "row",
           animation: "slideUp .3s ease",
         }}
       >
-        <button
-          onClick={onClose}
-          style={{
-            position: "absolute",
-            top: "1rem",
-            right: "1rem",
-            background: "#191919",
-            border: "1px solid #252525",
-            borderRadius: "50%",
-            width: 36,
-            height: 36,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            color: "#6e6b67",
-            fontSize: "1rem",
-            zIndex: 10,
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.borderColor = "#CC1F1F";
-            e.currentTarget.style.color = "#CC1F1F";
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.borderColor = "#252525";
-            e.currentTarget.style.color = "#6e6b67";
-          }}
-        >
-          ✕
-        </button>
-
-        {/* Hero image / slider */}
+        {/* ── KIRI: Image slider ── */}
         <div
           style={{
-            width: "100%",
-            aspectRatio: "16/9",
-            background: "linear-gradient(135deg,#191919,#111)",
-            borderRadius: "16px 16px 0 0",
+            width: isMobile ? "100%" : "420px",
+            flexShrink: 0,
+            background: "#f8f8f8",
+            borderRadius: isMobile ? "20px 20px 0 0" : "16px 0 0 16px",
             position: "relative",
             overflow: "hidden",
+            aspectRatio: "1/1",
           }}
         >
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "radial-gradient(ellipse at 65% 35%,rgba(204,31,31,.1) 0%,transparent 60%)",
-              zIndex: 1,
-            }}
-          />
           <ModalImageSlider p={p} />
         </div>
 
-        <div style={{ padding: "2rem" }}>
+        {/* ── KANAN: Info ── */}
+        <div
+          style={{
+            flex: 1,
+            padding: isMobile
+              ? "1.5rem 1.25rem 2rem"
+              : "2rem 2rem 2rem 1.75rem",
+            overflowY: isMobile ? "visible" : "auto",
+            display: "flex",
+            flexDirection: "column",
+            gap: 0,
+            position: "relative",
+          }}
+        >
+          {/* Tombol tutup */}
+          <button
+            onClick={onClose}
+            style={{
+              position: "absolute",
+              top: "1rem",
+              right: "1rem",
+              background: "#191919",
+              border: "1px solid #252525",
+              borderRadius: "50%",
+              width: 34,
+              height: 34,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: "#6e6b67",
+              fontSize: ".95rem",
+              zIndex: 10,
+              flexShrink: 0,
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.borderColor = "#CC1F1F";
+              e.currentTarget.style.color = "#CC1F1F";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.borderColor = "#252525";
+              e.currentTarget.style.color = "#6e6b67";
+            }}
+          >
+            ✕
+          </button>
+
+          {/* Brand + Name */}
           <div
             style={{
               fontFamily: "'DM Mono', monospace",
-              fontSize: ".67rem",
+              fontSize: ".63rem",
               color: "#CC1F1F",
               letterSpacing: "3px",
               textTransform: "uppercase",
-              marginBottom: ".4rem",
+              marginBottom: ".3rem",
+              marginTop: ".25rem",
             }}
           >
             {p.brand}
@@ -1745,41 +1779,77 @@ const Modal = ({ product, onClose }) => {
           <div
             style={{
               fontFamily: "'Bebas Neue', sans-serif",
-              fontSize: "2rem",
+              fontSize: isMobile ? "1.75rem" : "2rem",
               letterSpacing: "2px",
-              marginBottom: ".4rem",
+              lineHeight: 1.05,
+              marginBottom: ".75rem",
+              paddingRight: "2.5rem",
             }}
           >
             {p.name}
           </div>
+
+          {/* Type chip */}
+          <div style={{ marginBottom: "1rem" }}>
+            <span
+              style={{
+                fontFamily: "'DM Mono', monospace",
+                fontSize: ".62rem",
+                letterSpacing: "1.5px",
+                textTransform: "uppercase",
+                padding: ".22rem .65rem",
+                background: "rgba(204,31,31,.12)",
+                border: "1px solid rgba(204,31,31,.3)",
+                borderRadius: 4,
+                color: "#CC1F1F",
+              }}
+            >
+              {p.type.toUpperCase()}
+            </span>
+          </div>
+
+          {/* Harga */}
           <div
             style={{
               fontFamily: "'Bebas Neue', sans-serif",
-              fontSize: "2.75rem",
+              fontSize: isMobile ? "2.2rem" : "2.6rem",
               color: "#CC1F1F",
               letterSpacing: "2px",
-              marginBottom: "1.5rem",
-              textShadow: "0 0 40px rgba(204,31,31,.25)",
+              marginBottom: "1.25rem",
+              textShadow: "0 0 30px rgba(204,31,31,.2)",
+              lineHeight: 1,
             }}
           >
             {fmt(p.price)}
+            <span
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: ".7rem",
+                color: "#6e6b67",
+                fontWeight: 400,
+                letterSpacing: 0,
+                marginLeft: ".5rem",
+              }}
+            >
+              / unit
+            </span>
           </div>
 
-          {/* Specs grid */}
+          {/* Specs grid — 2 kolom */}
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(3,1fr)",
-              gap: ".6rem",
-              marginBottom: "1.2rem",
+              gridTemplateColumns: "1fr 1fr",
+              gap: ".5rem",
+              marginBottom: "1.1rem",
             }}
           >
             {[
-              ["Jenis", p.type.toUpperCase()],
               ["Kaliber", p.caliber],
               ["Sistem", p.sistem],
               ["Magasin", p.mag],
               ["Berat", p.berat],
+              ["Jenis", p.type.toUpperCase()],
               ["Status", "✓ Tersedia"],
             ].map(([l, v]) => (
               <div
@@ -1788,16 +1858,16 @@ const Modal = ({ product, onClose }) => {
                   background: "#191919",
                   border: "1px solid #252525",
                   borderRadius: 8,
-                  padding: ".65rem .8rem",
+                  padding: ".6rem .75rem",
                 }}
               >
                 <div
                   style={{
-                    fontSize: ".58rem",
+                    fontSize: ".56rem",
                     color: "#6e6b67",
                     textTransform: "uppercase",
                     letterSpacing: "1px",
-                    marginBottom: ".18rem",
+                    marginBottom: ".15rem",
                     fontFamily: "'DM Mono', monospace",
                   }}
                 >
@@ -1805,7 +1875,7 @@ const Modal = ({ product, onClose }) => {
                 </div>
                 <div
                   style={{
-                    fontSize: ".87rem",
+                    fontSize: ".84rem",
                     fontWeight: 600,
                     color: l === "Status" ? "#2ecc71" : "#f0ede8",
                   }}
@@ -1820,27 +1890,28 @@ const Modal = ({ product, onClose }) => {
           <div
             style={{
               color: "#6e6b67",
-              fontSize: ".87rem",
+              fontSize: ".84rem",
               lineHeight: 1.75,
-              marginBottom: "1.75rem",
-              padding: "1rem 1.1rem",
+              marginBottom: "1.5rem",
+              padding: ".85rem 1rem",
               background: "#191919",
               borderRadius: 8,
               borderLeft: "3px solid #CC1F1F",
+              flexGrow: 1,
             }}
           >
             {p.desc}
           </div>
 
           {/* Actions */}
-          <div style={{ display: "flex", gap: ".75rem", flexWrap: "wrap" }}>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: ".6rem" }}
+          >
             <a
               href={waLink(p)}
               target="_blank"
               rel="noreferrer"
               style={{
-                flex: 1,
-                minWidth: 200,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -1848,28 +1919,43 @@ const Modal = ({ product, onClose }) => {
                 background: "#25D366",
                 color: "#fff",
                 textDecoration: "none",
-                padding: ".9rem 1.5rem",
+                padding: ".85rem 1.5rem",
                 borderRadius: 10,
                 fontWeight: 700,
                 fontSize: ".94rem",
+                transition: "background .2s",
               }}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.background = "#1aab52")
+              }
+              onMouseOut={(e) => (e.currentTarget.style.background = "#25D366")}
             >
               <WaIcon size={18} /> Pesan via WhatsApp
             </a>
             <button
               onClick={onClose}
               style={{
-                display: "inline-flex",
+                display: "flex",
                 alignItems: "center",
+                justifyContent: "center",
                 gap: ".45rem",
                 background: "transparent",
                 color: "#6e6b67",
-                padding: ".9rem 1.25rem",
+                padding: ".75rem 1.25rem",
                 borderRadius: 10,
                 fontSize: ".84rem",
                 border: "1px solid #252525",
                 cursor: "pointer",
                 fontFamily: "'DM Sans', sans-serif",
+                transition: "all .2s",
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.borderColor = "#6e6b67";
+                e.currentTarget.style.color = "#f0ede8";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.borderColor = "#252525";
+                e.currentTarget.style.color = "#6e6b67";
               }}
             >
               ← Kembali
@@ -1884,7 +1970,11 @@ const Modal = ({ product, onClose }) => {
 // ── LOCATION ──────────────────────────────────────────────────────
 const Location = () => (
   <section
-    style={{ maxWidth: 1400, margin: "0 auto", padding: "2rem 2rem 5rem" }}
+    style={{
+      maxWidth: 1400,
+      margin: "0 auto",
+      padding: "2rem 2rem 5rem",
+    }}
     id="lokasi"
   >
     <div
@@ -1989,7 +2079,7 @@ const Location = () => (
               wa: false,
             },
             {
-              href: "https://maps.google.com/?q=Jl+Jend+Sudirman+Lubuklinggau",
+              href: "https://www.google.com/maps?q=TOKO+MARGARIA+Lubuklinggau",
               label: "Maps",
               icon: <PinIcon />,
               wa: false,
@@ -2053,7 +2143,7 @@ const Location = () => (
         }}
       >
         <iframe
-          src="https://maps.google.com/maps?q=Jl.+Jend.+Sudirman+Lubuklinggau+Sumatera+Selatan&output=embed"
+          src="https://maps.google.com/maps?q=TOKO+MARGARIA+Lubuklinggau&output=embed"
           style={{
             width: "100%",
             border: "none",
@@ -2114,7 +2204,7 @@ const Footer = () => (
           color: "#333",
         }}
       >
-        © 2025 <span style={{ color: "#6e6b67" }}>Kakak Dewa Sports</span> ·
+        © 2026 <span style={{ color: "#6e6b67" }}>Kakak Dewa Sports</span> ·
         Harga dapat berubah sewaktu-waktu · Transaksi via WhatsApp
       </div>
     </div>
