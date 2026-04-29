@@ -190,11 +190,11 @@ const fmt = (p) => "Rp " + p.toLocaleString("id-ID");
 const waLink = (p) => {
   const msg = encodeURIComponent(
     `Halo ${TOKO}, saya tertarik dengan:\n\n` +
-      `📌 *${p.brand} ${p.name}*\n` +
-      `🏷️ Jenis: ${p.type.toUpperCase()}\n` +
-      `💰 Harga: ${fmt(p.price)}\n` +
-      `🎯 Kaliber: ${p.caliber}\n\n` +
-      `Apakah stok tersedia? Terima kasih! 🙏`,
+      `- *${p.brand} ${p.name}*\n` +
+      `- Jenis: ${p.type.toUpperCase()}\n` +
+      `- Harga: ${fmt(p.price)}\n` +
+      `- Kaliber: ${p.caliber}\n\n` +
+      `Apakah stok tersedia? Terima kasih!`,
   );
   return `https://wa.me/${WA}?text=${msg}`;
 };
@@ -351,151 +351,390 @@ const Logo = ({ size = 44 }) => {
 };
 
 // ── HEADER ────────────────────────────────────────────────────────
-const Header = ({ onNavClick }) => (
-  <header
-    style={{
-      position: "sticky",
-      top: 0,
-      zIndex: 500,
-      background: "rgba(8,8,8,0.96)",
-      backdropFilter: "blur(20px)",
-      borderBottom: "1px solid #252525",
-      height: 66,
-      padding: "0 2rem",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      gap: "1rem",
-    }}
-  >
-    <a
-      href="#"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "0.7rem",
-        textDecoration: "none",
-      }}
-    >
-      <Logo size={44} />
-      <div style={{ lineHeight: 1.1 }}>
-        <div
-          style={{
-            fontFamily: "'Bebas Neue', sans-serif",
-            fontSize: "1.25rem",
-            letterSpacing: "3px",
-            color: "#f0ede8",
-          }}
-        >
-          KAKAK DEWA
-        </div>
-        <div
-          style={{
-            fontFamily: "'DM Mono', monospace",
-            fontSize: "0.52rem",
-            letterSpacing: "3px",
-            color: "#CC1F1F",
-            textTransform: "uppercase",
-          }}
-        >
-          SPORTS
-        </div>
-      </div>
-    </a>
+const Header = ({ onNavClick }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isMobileHeader, setIsMobileHeader] = useState(window.innerWidth < 768);
 
-    <nav style={{ display: "flex", alignItems: "center", gap: "1.25rem" }}>
-      {["Best Seller", "Katalog", "Lokasi"].map((label) => (
-        <button
-          key={label}
-          onClick={() => onNavClick(label)}
-          style={{
-            background: "none",
-            border: "none",
-            color: "#6e6b67",
-            fontSize: "0.84rem",
-            fontWeight: 500,
-            cursor: "pointer",
-            fontFamily: "'DM Sans', sans-serif",
-            transition: "color .2s",
-          }}
-          onMouseOver={(e) => (e.target.style.color = "#f0ede8")}
-          onMouseOut={(e) => (e.target.style.color = "#6e6b67")}
-        >
-          {label}
-        </button>
-      ))}
+  useEffect(() => {
+    const onResize = () => setIsMobileHeader(window.innerWidth < 768);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
-      <div style={{ width: 1, height: 22, background: "#252525" }} />
+  // Tutup menu saat klik nav item
+  const handleNav = (label) => {
+    setMenuOpen(false);
+    onNavClick(label);
+  };
 
-      {[
-        {
-          href: "https://www.instagram.com/kakakdewa.sport/",
-          icon: <IgIcon />,
-          title: "Instagram",
-        },
-        {
-          href: "https://www.facebook.com/profile.php?id=61588663539438",
-          icon: <FbIcon />,
-          title: "Facebook",
-        },
-      ].map(({ href, icon, title }) => (
-        <a
-          key={title}
-          href={href}
-          target="_blank"
-          rel="noreferrer"
-          title={title}
-          style={{
-            width: 32,
-            height: 32,
-            borderRadius: 8,
-            border: "1px solid #252525",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#6e6b67",
-            textDecoration: "none",
-            background: "#111",
-            transition: "all .2s",
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.borderColor = "#CC1F1F";
-            e.currentTarget.style.color = "#CC1F1F";
-            e.currentTarget.style.background = "#CC1F1F18";
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.borderColor = "#252525";
-            e.currentTarget.style.color = "#6e6b67";
-            e.currentTarget.style.background = "#111";
-          }}
-        >
-          {icon}
-        </a>
-      ))}
+  const NAV_ITEMS = ["Best Seller", "Katalog", "Lokasi"];
+  const SOCIALS = [
+    {
+      href: "https://www.instagram.com/kakakdewa.sport/",
+      icon: <IgIcon />,
+      title: "Instagram",
+    },
+    {
+      href: "https://www.facebook.com/profile.php?id=61588663539438",
+      icon: <FbIcon />,
+      title: "Facebook",
+    },
+  ];
 
-      <a
-        href={`https://wa.me/${WA}?text=${encodeURIComponent("Halo Kakak Dewa Sports, saya ingin bertanya.")}`}
-        target="_blank"
-        rel="noreferrer"
+  return (
+    <>
+      <header
         style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 500,
+          background: "rgba(8,8,8,0.97)",
+          backdropFilter: "blur(20px)",
+          borderBottom: "1px solid #252525",
+          height: 66,
+          padding: "0 1.25rem",
           display: "flex",
           alignItems: "center",
-          gap: "0.4rem",
-          background: "#25D366",
-          color: "#fff",
-          padding: "0.42rem 0.85rem",
-          borderRadius: 8,
-          fontSize: "0.8rem",
-          fontWeight: 700,
-          textDecoration: "none",
-          whiteSpace: "nowrap",
+          justifyContent: "space-between",
         }}
       >
-        <WaIcon size={13} /> Hubungi Kami
-      </a>
-    </nav>
-  </header>
-);
+        {/* Logo */}
+        <a
+          href="#"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.6rem",
+            textDecoration: "none",
+            flexShrink: 0,
+          }}
+        >
+          <Logo size={isMobileHeader ? 38 : 44} />
+          <div style={{ lineHeight: 1.1 }}>
+            <div
+              style={{
+                fontFamily: "'Bebas Neue', sans-serif",
+                fontSize: isMobileHeader ? "1rem" : "1.25rem",
+                letterSpacing: "3px",
+                color: "#f0ede8",
+              }}
+            >
+              KAKAK DEWA
+            </div>
+            <div
+              style={{
+                fontFamily: "'DM Mono', monospace",
+                fontSize: "0.5rem",
+                letterSpacing: "3px",
+                color: "#CC1F1F",
+                textTransform: "uppercase",
+              }}
+            >
+              SPORTS
+            </div>
+          </div>
+        </a>
+
+        {/* Desktop nav */}
+        {!isMobileHeader && (
+          <nav
+            style={{ display: "flex", alignItems: "center", gap: "1.25rem" }}
+          >
+            {NAV_ITEMS.map((label) => (
+              <button
+                key={label}
+                onClick={() => handleNav(label)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#6e6b67",
+                  fontSize: "0.84rem",
+                  fontWeight: 500,
+                  cursor: "pointer",
+                  fontFamily: "'DM Sans', sans-serif",
+                  transition: "color .2s",
+                }}
+                onMouseOver={(e) => (e.target.style.color = "#f0ede8")}
+                onMouseOut={(e) => (e.target.style.color = "#6e6b67")}
+              >
+                {label}
+              </button>
+            ))}
+            <div style={{ width: 1, height: 22, background: "#252525" }} />
+            {SOCIALS.map(({ href, icon, title }) => (
+              <a
+                key={title}
+                href={href}
+                target="_blank"
+                rel="noreferrer"
+                title={title}
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 8,
+                  border: "1px solid #252525",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#6e6b67",
+                  textDecoration: "none",
+                  background: "#111",
+                  transition: "all .2s",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.borderColor = "#CC1F1F";
+                  e.currentTarget.style.color = "#CC1F1F";
+                  e.currentTarget.style.background = "#CC1F1F18";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.borderColor = "#252525";
+                  e.currentTarget.style.color = "#6e6b67";
+                  e.currentTarget.style.background = "#111";
+                }}
+              >
+                {icon}
+              </a>
+            ))}
+            <a
+              href={`https://wa.me/${WA}?text=${encodeURIComponent("Halo Kakak Dewa Sports, saya ingin bertanya.")}`}
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.4rem",
+                background: "#25D366",
+                color: "#fff",
+                padding: "0.42rem 0.85rem",
+                borderRadius: 8,
+                fontSize: "0.8rem",
+                fontWeight: 700,
+                textDecoration: "none",
+                whiteSpace: "nowrap",
+              }}
+            >
+              <WaIcon size={13} /> Hubungi Kami
+            </a>
+          </nav>
+        )}
+
+        {/* Mobile: WA pill + hamburger */}
+        {isMobileHeader && (
+          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+            <a
+              href={`https://wa.me/${WA}?text=${encodeURIComponent("Halo Kakak Dewa Sports, saya ingin bertanya.")}`}
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.35rem",
+                background: "#25D366",
+                color: "#fff",
+                padding: "0.38rem 0.75rem",
+                borderRadius: 8,
+                fontSize: "0.75rem",
+                fontWeight: 700,
+                textDecoration: "none",
+                whiteSpace: "nowrap",
+                transition: "all .2s",
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.background = "#1aab52";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.background = "#25D366";
+              }}
+            >
+              <WaIcon size={12} /> WA
+            </a>
+
+            {/* Hamburger button */}
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              style={{
+                background: "none",
+                border: "1px solid #252525",
+                borderRadius: 8,
+                width: 38,
+                height: 38,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: menuOpen ? 0 : "5px",
+                cursor: "pointer",
+                padding: "0 10px",
+                flexShrink: 0,
+                transition: "border-color .2s",
+              }}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.borderColor = "#CC1F1F")
+              }
+              onMouseOut={(e) =>
+                (e.currentTarget.style.borderColor = "#252525")
+              }
+              aria-label="Menu"
+            >
+              <span
+                style={{
+                  display: "block",
+                  width: "100%",
+                  height: 2,
+                  background: menuOpen ? "transparent" : "#f0ede8",
+                  transition: "all .25s",
+                  transform: menuOpen ? "rotate(45deg) translate(0,0)" : "none",
+                }}
+              />
+              {[0, 1, 2].map((i) => (
+                <span
+                  key={i}
+                  style={{
+                    position: "absolute",
+                    width: 18,
+                    height: 2,
+                    background: "#f0ede8",
+                    transition: "all .3s ease",
+                    transformOrigin: "center",
+                    ...(i === 0 && {
+                      transform: menuOpen
+                        ? "rotate(45deg)"
+                        : "translateY(-6px)",
+                    }),
+                    ...(i === 1 && {
+                      opacity: menuOpen ? 0 : 1,
+                    }),
+                    ...(i === 2 && {
+                      transform: menuOpen
+                        ? "rotate(-45deg)"
+                        : "translateY(6px)",
+                    }),
+                  }}
+                />
+              ))}
+            </button>
+          </div>
+        )}
+      </header>
+
+      {/* Mobile dropdown menu */}
+      {isMobileHeader && menuOpen && (
+        <div
+          style={{
+            position: "fixed",
+            top: 66,
+            left: 0,
+            right: 0,
+            zIndex: 499,
+            background: "rgba(8,8,8,0.98)",
+            backdropFilter: "blur(20px)",
+            borderBottom: "1px solid #252525",
+            padding: "1rem 1.25rem 1.5rem",
+            display: "flex",
+            flexDirection: "column",
+            gap: "0.25rem",
+            animation: "slideDown .2s ease",
+          }}
+        >
+          <style>{`@keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }`}</style>
+
+          {/* Nav links */}
+          {NAV_ITEMS.map((label) => (
+            <button
+              key={label}
+              onClick={() => handleNav(label)}
+              style={{
+                background: "none",
+                border: "none",
+                borderBottom: "1px solid #1a1a1a",
+                color: "#f0ede8",
+                fontSize: "1rem",
+                fontWeight: 600,
+                cursor: "pointer",
+                fontFamily: "'DM Sans', sans-serif",
+                textAlign: "left",
+                padding: "0.85rem 0",
+                width: "100%",
+              }}
+            >
+              {label}
+            </button>
+          ))}
+
+          {/* Socials row */}
+          <div style={{ display: "flex", gap: "0.6rem", marginTop: "0.75rem" }}>
+            {SOCIALS.map(({ href, icon, title }) => (
+              <a
+                key={title}
+                href={href}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.4rem",
+                  padding: "0.5rem 0.85rem",
+                  borderRadius: 8,
+                  border: "1px solid #252525",
+                  color: "#6e6b67",
+                  textDecoration: "none",
+                  fontSize: "0.8rem",
+                  fontWeight: 600,
+                  background: "#111",
+                  flex: 1,
+                  justifyContent: "center",
+                  transition: "all .2s",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.borderColor = "#CC1F1F";
+                  e.currentTarget.style.color = "#CC1F1F";
+                  e.currentTarget.style.background = "#CC1F1F18";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.borderColor = "#252525";
+                  e.currentTarget.style.color = "#6e6b67";
+                  e.currentTarget.style.background = "#111";
+                }}
+              >
+                {icon} {title}
+              </a>
+            ))}
+          </div>
+
+          {/* WA full */}
+          <a
+            href={`https://wa.me/${WA}?text=${encodeURIComponent("Halo Kakak Dewa Sports, saya ingin bertanya.")}`}
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "0.5rem",
+              background: "#25D366",
+              color: "#fff",
+              padding: "0.75rem",
+              borderRadius: 10,
+              fontSize: "0.9rem",
+              fontWeight: 700,
+              textDecoration: "none",
+              marginTop: "0.25rem",
+              transition: "all .2s",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.background = "#1aab52";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.background = "#25D366";
+            }}
+          >
+            <WaIcon size={16} /> Hubungi via WhatsApp
+          </a>
+        </div>
+      )}
+    </>
+  );
+};
 
 // ── HERO ──────────────────────────────────────────────────────────
 const Hero = ({ total }) => (
@@ -557,8 +796,7 @@ const Hero = ({ total }) => (
           src={KakakDewaLogo}
           alt="Kakak Dewa Sports"
           style={{
-            width: 300,
-            height: 300,
+            width: "clamp(15rem,37.5vw,22rem)",
             objectFit: "contain",
             display: "block",
             margin: "0 auto",
@@ -578,7 +816,7 @@ const Hero = ({ total }) => (
           fontFamily: "'Bebas Neue', sans-serif",
           letterSpacing: "4px",
           lineHeight: 0.93,
-          fontSize: "clamp(3rem,7.5vw,6.5rem)",
+          fontSize: "clamp(3rem,7.5vw,5rem)",
           marginBottom: "1rem",
         }}
       >
@@ -625,7 +863,7 @@ const Hero = ({ total }) => (
               background: "#111",
               border: "1px solid #252525",
               borderRadius: 30,
-              padding: ".45rem 1rem",
+              padding: ".45rem 1.25rem",
               fontSize: ".79rem",
               fontWeight: 600,
               whiteSpace: "nowrap",
@@ -658,6 +896,7 @@ const Hero = ({ total }) => (
           borderRadius: 12,
           overflow: "hidden",
           background: "#111",
+          maxWidth: "100%",
         }}
       >
         {[
@@ -669,7 +908,7 @@ const Hero = ({ total }) => (
           <div
             key={lbl}
             style={{
-              padding: "1.1rem 2rem",
+              padding: "1rem clamp(.75rem, 3vw, 2rem)",
               textAlign: "center",
               borderRight: i < 3 ? "1px solid #252525" : "none",
             }}
@@ -677,7 +916,7 @@ const Hero = ({ total }) => (
             <span
               style={{
                 fontFamily: "'Bebas Neue', sans-serif",
-                fontSize: "1.9rem",
+                fontSize: "clamp(1.4rem, 4vw, 1.9rem)",
                 color: "#CC1F1F",
                 letterSpacing: "2px",
                 display: "block",
@@ -687,7 +926,7 @@ const Hero = ({ total }) => (
             </span>
             <span
               style={{
-                fontSize: ".65rem",
+                fontSize: "clamp(.55rem, 2vw, .65rem)",
                 color: "#6e6b67",
                 textTransform: "uppercase",
                 letterSpacing: "1px",
@@ -881,6 +1120,13 @@ const Carousel = ({ onOrder, onDetail }) => {
                   borderRadius: 8,
                   fontWeight: 700,
                   fontSize: ".84rem",
+                  transition: "all .2s",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background = "#b81818";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.background = "#CC1F1F";
                 }}
               >
                 <WaIcon size={14} /> Pesan Sekarang
@@ -899,6 +1145,17 @@ const Carousel = ({ onOrder, onDetail }) => {
                   border: "1px solid #252525",
                   cursor: "pointer",
                   fontFamily: "'DM Sans', sans-serif",
+                  transition: "all .2s",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.borderColor = "#CC1F1F";
+                  e.currentTarget.style.color = "#CC1F1F";
+                  e.currentTarget.style.background = "#CC1F1F18";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.borderColor = "#252525";
+                  e.currentTarget.style.color = "#6e6b67";
+                  e.currentTarget.style.background = "#111";
                 }}
               >
                 Lihat Detail
@@ -1425,6 +1682,13 @@ const ProductCard = ({ p, idx, onDetail }) => (
             fontWeight: 700,
             cursor: "pointer",
             textDecoration: "none",
+            transition: "all .2s",
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.background = "#1aab52";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.background = "#25D366";
           }}
         >
           <WaIcon size={12} /> Order
