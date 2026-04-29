@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import KakakDewaLogo from "./assets/kakakdewa-logo.png";
 
-// ── DATA ──────────────────────────────────────────────────────────
 const WA = "6282124377830";
 const TOKO = "Kakak Dewa Sports";
 
@@ -90,8 +89,8 @@ const PRODUCTS = [
     berat: "3.1 kg",
     badge: "new",
     emoji: "💨",
-    images: ["5-1", "5-2", "5-3"], // ← slug foto varian
-    variantLabels: ["Hitam", "Coklat Walnut", "Putih"], // ← label tiap varian (opsional)
+    images: ["5-1", "5-2", "5-3"],
+    variantLabels: ["Hitam", "Coklat Walnut", "Putih"],
     desc: "Bocap premium buatan Jerman dengan standar kualitas tinggi. Shot-to-shot konsisten, daya tahan luar biasa untuk pemakaian bertahun-tahun.",
   },
   {
@@ -167,7 +166,6 @@ const PRODUCTS = [
 ];
 
 const BEST_SELLER_IDS = [10, 1, 3, 7, 2];
-
 const TYPES = [
   { key: "all", label: "Semua" },
   { key: "pcp", label: "PCP" },
@@ -175,7 +173,6 @@ const TYPES = [
   { key: "bocap", label: "Bocap" },
   { key: "gejluk", label: "Gejluk" },
 ];
-
 const SORTS = [
   { key: "", label: "Default" },
   { key: "pa", label: "Harga: Terendah" },
@@ -184,28 +181,20 @@ const SORTS = [
   { key: "nd", label: "Nama: Z–A" },
 ];
 
-// ── HELPERS ───────────────────────────────────────────────────────
 const fmt = (p) => "Rp " + p.toLocaleString("id-ID");
-
 const waLink = (p) => {
   const msg = encodeURIComponent(
-    `Halo ${TOKO}, saya tertarik dengan:\n\n` +
-      `- *${p.brand} ${p.name}*\n` +
-      `- Jenis: ${p.type.toUpperCase()}\n` +
-      `- Harga: ${fmt(p.price)}\n` +
-      `- Kaliber: ${p.caliber}\n\n` +
-      `Apakah stok tersedia? Terima kasih!`,
+    `Halo ${TOKO}, saya tertarik dengan:\n\n📌 *${p.brand} ${p.name}*\n🏷️ Jenis: ${p.type.toUpperCase()}\n💰 Harga: ${fmt(p.price)}\n🎯 Kaliber: ${p.caliber}\n\nApakah stok tersedia? Terima kasih! 🙏`,
   );
   return `https://wa.me/${WA}?text=${msg}`;
 };
 
-// ── ICONS ─────────────────────────────────────────────────────────
+// ── ICONS ──
 const WaIcon = ({ size = 16 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a3.178 3.178 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
   </svg>
 );
-
 const IgIcon = () => (
   <svg
     width="14"
@@ -220,13 +209,11 @@ const IgIcon = () => (
     <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
   </svg>
 );
-
 const FbIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
     <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
   </svg>
 );
-
 const PinIcon = () => (
   <svg
     width="15"
@@ -240,7 +227,6 @@ const PinIcon = () => (
     <circle cx="12" cy="10" r="3" />
   </svg>
 );
-
 const ClockIcon = () => (
   <svg
     width="15"
@@ -254,7 +240,6 @@ const ClockIcon = () => (
     <polyline points="12 6 12 12 16 14" />
   </svg>
 );
-
 const PhoneIcon = () => (
   <svg
     width="15"
@@ -267,7 +252,6 @@ const PhoneIcon = () => (
     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.99 12 19.79 19.79 0 0 1 1.89 3.5 2 2 0 0 1 3.87 1.36h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9a16 16 0 0 0 6.29 6.29l.76-.76a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
   </svg>
 );
-
 const SearchIcon = () => (
   <svg
     width="15"
@@ -281,40 +265,6 @@ const SearchIcon = () => (
     <path d="m21 21-4.35-4.35" />
   </svg>
 );
-
-// ── BADGE ─────────────────────────────────────────────────────────
-const Badge = ({ badge }) => {
-  if (!badge) return null;
-  const map = {
-    hot: ["🔥 Terlaris", "#e55a00"],
-    new: ["✨ Baru", "#CC1F1F"],
-    ready: ["✅ Ready", "#2ecc71"],
-  };
-  const [label, color] = map[badge] || ["", "#999"];
-  return (
-    <span
-      style={{
-        position: "absolute",
-        top: 10,
-        left: 10,
-        zIndex: 2,
-        fontFamily: "'DM Mono', monospace",
-        fontSize: "0.58rem",
-        letterSpacing: "1px",
-        padding: "0.18rem 0.5rem",
-        borderRadius: 4,
-        textTransform: "uppercase",
-        background: color,
-        color: badge === "ready" ? "#000" : "#fff",
-        fontWeight: 600,
-      }}
-    >
-      {label}
-    </span>
-  );
-};
-
-// ── LOGO ──────────────────────────────────────────────────────────
 const Logo = ({ size = 44 }) => {
   const [err, setErr] = useState(false);
   return err ? (
@@ -322,17 +272,88 @@ const Logo = ({ size = 44 }) => {
       style={{
         width: size,
         height: size,
-        borderRadius: "50%",
-        background: "radial-gradient(circle, #CC1F1F22, transparent)",
+        flexShrink: 0,
+        background:
+          "linear-gradient(160deg,#CC1F1F 0%,#8a0f0f 60%,#2a0404 100%)",
+        borderRadius: "16% 16% 50% 50%/12% 12% 40% 40%",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        fontSize: size * 0.5,
-        border: "1px solid #CC1F1F44",
-        flexShrink: 0,
+        boxShadow: "0 0 12px rgba(204,31,31,.5)",
+        border: "1.5px solid rgba(255,255,255,0.12)",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
-      🏹
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "radial-gradient(circle at 40% 28%, rgba(255,255,255,.18) 0%, transparent 55%)",
+        }}
+      />
+      <svg
+        width={size * 0.56}
+        height={size * 0.56}
+        viewBox="0 0 24 24"
+        fill="none"
+        style={{ position: "relative", zIndex: 1 }}
+      >
+        <circle
+          cx="12"
+          cy="12"
+          r="9"
+          stroke="white"
+          strokeWidth="1.4"
+          opacity="0.9"
+        />
+        <circle
+          cx="12"
+          cy="12"
+          r="4"
+          stroke="white"
+          strokeWidth="1.4"
+          opacity="0.9"
+        />
+        <circle cx="12" cy="12" r="1.5" fill="white" />
+        <line
+          x1="12"
+          y1="2"
+          x2="12"
+          y2="6.5"
+          stroke="white"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+        />
+        <line
+          x1="12"
+          y1="17.5"
+          x2="12"
+          y2="22"
+          stroke="white"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+        />
+        <line
+          x1="2"
+          y1="12"
+          x2="6.5"
+          y2="12"
+          stroke="white"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+        />
+        <line
+          x1="17.5"
+          y1="12"
+          x2="22"
+          y2="12"
+          stroke="white"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+        />
+      </svg>
     </div>
   ) : (
     <img
@@ -350,24 +371,51 @@ const Logo = ({ size = 44 }) => {
   );
 };
 
-// ── HEADER ────────────────────────────────────────────────────────
+// ── BADGE ──
+const Badge = ({ badge }) => {
+  if (!badge) return null;
+  const map = {
+    hot: ["🔥 Terlaris", "#e55a00"],
+    new: ["✨ Baru", "#CC1F1F"],
+    ready: ["✅ Ready", "#2ecc71"],
+  };
+  const [label, color] = map[badge] || ["", "#999"];
+  return (
+    <span
+      style={{
+        position: "absolute",
+        top: 10,
+        left: 10,
+        zIndex: 2,
+        fontFamily: "'DM Mono',monospace",
+        fontSize: ".58rem",
+        letterSpacing: "1px",
+        padding: ".18rem .5rem",
+        borderRadius: 4,
+        textTransform: "uppercase",
+        background: color,
+        color: badge === "ready" ? "#000" : "#fff",
+        fontWeight: 600,
+      }}
+    >
+      {label}
+    </span>
+  );
+};
+
+// ── HEADER ──
 const Header = ({ onNavClick }) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isMobileHeader, setIsMobileHeader] = useState(window.innerWidth < 768);
-
+  const [mob, setMob] = useState(window.innerWidth < 768);
   useEffect(() => {
-    const onResize = () => setIsMobileHeader(window.innerWidth < 768);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    const fn = () => setMob(window.innerWidth < 768);
+    window.addEventListener("resize", fn);
+    return () => window.removeEventListener("resize", fn);
   }, []);
-
-  // Tutup menu saat klik nav item
-  const handleNav = (label) => {
+  const nav = (l) => {
     setMenuOpen(false);
-    onNavClick(label);
+    onNavClick(l);
   };
-
-  const NAV_ITEMS = ["Best Seller", "Katalog", "Lokasi"];
   const SOCIALS = [
     {
       href: "https://www.instagram.com/kakakdewa.sport/",
@@ -380,7 +428,6 @@ const Header = ({ onNavClick }) => {
       title: "Facebook",
     },
   ];
-
   return (
     <>
       <header
@@ -398,23 +445,22 @@ const Header = ({ onNavClick }) => {
           justifyContent: "space-between",
         }}
       >
-        {/* Logo */}
         <a
           href="#"
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "0.6rem",
+            gap: ".6rem",
             textDecoration: "none",
             flexShrink: 0,
           }}
         >
-          <Logo size={isMobileHeader ? 38 : 44} />
+          <Logo size={mob ? 38 : 44} />
           <div style={{ lineHeight: 1.1 }}>
             <div
               style={{
-                fontFamily: "'Bebas Neue', sans-serif",
-                fontSize: isMobileHeader ? "1rem" : "1.25rem",
+                fontFamily: "'Bebas Neue',sans-serif",
+                fontSize: mob ? "1rem" : "1.25rem",
                 letterSpacing: "3px",
                 color: "#f0ede8",
               }}
@@ -423,8 +469,8 @@ const Header = ({ onNavClick }) => {
             </div>
             <div
               style={{
-                fontFamily: "'DM Mono', monospace",
-                fontSize: "0.5rem",
+                fontFamily: "'DM Mono',monospace",
+                fontSize: ".5rem",
                 letterSpacing: "3px",
                 color: "#CC1F1F",
                 textTransform: "uppercase",
@@ -434,30 +480,27 @@ const Header = ({ onNavClick }) => {
             </div>
           </div>
         </a>
-
-        {/* Desktop nav */}
-        {!isMobileHeader && (
+        {!mob && (
           <nav
             style={{ display: "flex", alignItems: "center", gap: "1.25rem" }}
           >
-            {NAV_ITEMS.map((label) => (
+            {["Best Seller", "Katalog", "Lokasi"].map((l) => (
               <button
-                key={label}
-                onClick={() => handleNav(label)}
+                key={l}
+                onClick={() => nav(l)}
                 style={{
                   background: "none",
                   border: "none",
                   color: "#6e6b67",
-                  fontSize: "0.84rem",
+                  fontSize: ".84rem",
                   fontWeight: 500,
                   cursor: "pointer",
-                  fontFamily: "'DM Sans', sans-serif",
-                  transition: "color .2s",
+                  fontFamily: "'DM Sans',sans-serif",
                 }}
                 onMouseOver={(e) => (e.target.style.color = "#f0ede8")}
                 onMouseOut={(e) => (e.target.style.color = "#6e6b67")}
               >
-                {label}
+                {l}
               </button>
             ))}
             <div style={{ width: 1, height: 22, background: "#252525" }} />
@@ -467,7 +510,6 @@ const Header = ({ onNavClick }) => {
                 href={href}
                 target="_blank"
                 rel="noreferrer"
-                title={title}
                 style={{
                   width: 32,
                   height: 32,
@@ -479,17 +521,14 @@ const Header = ({ onNavClick }) => {
                   color: "#6e6b67",
                   textDecoration: "none",
                   background: "#111",
-                  transition: "all .2s",
                 }}
                 onMouseOver={(e) => {
                   e.currentTarget.style.borderColor = "#CC1F1F";
                   e.currentTarget.style.color = "#CC1F1F";
-                  e.currentTarget.style.background = "#CC1F1F18";
                 }}
                 onMouseOut={(e) => {
                   e.currentTarget.style.borderColor = "#252525";
                   e.currentTarget.style.color = "#6e6b67";
-                  e.currentTarget.style.background = "#111";
                 }}
               >
                 {icon}
@@ -502,12 +541,12 @@ const Header = ({ onNavClick }) => {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "0.4rem",
+                gap: ".4rem",
                 background: "#25D366",
                 color: "#fff",
-                padding: "0.42rem 0.85rem",
+                padding: ".42rem .85rem",
                 borderRadius: 8,
-                fontSize: "0.8rem",
+                fontSize: ".8rem",
                 fontWeight: 700,
                 textDecoration: "none",
                 whiteSpace: "nowrap",
@@ -517,39 +556,27 @@ const Header = ({ onNavClick }) => {
             </a>
           </nav>
         )}
-
-        {/* Mobile: WA pill + hamburger */}
-        {isMobileHeader && (
-          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+        {mob && (
+          <div style={{ display: "flex", alignItems: "center", gap: ".6rem" }}>
             <a
-              href={`https://wa.me/${WA}?text=${encodeURIComponent("Halo Kakak Dewa Sports, saya ingin bertanya.")}`}
+              href={`https://wa.me/${WA}`}
               target="_blank"
               rel="noreferrer"
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "0.35rem",
+                gap: ".35rem",
                 background: "#25D366",
                 color: "#fff",
-                padding: "0.38rem 0.75rem",
+                padding: ".38rem .75rem",
                 borderRadius: 8,
-                fontSize: "0.75rem",
+                fontSize: ".75rem",
                 fontWeight: 700,
                 textDecoration: "none",
-                whiteSpace: "nowrap",
-                transition: "all .2s",
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.background = "#1aab52";
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.background = "#25D366";
               }}
             >
               <WaIcon size={12} /> WA
             </a>
-
-            {/* Hamburger button */}
             <button
               onClick={() => setMenuOpen((v) => !v)}
               style={{
@@ -562,53 +589,20 @@ const Header = ({ onNavClick }) => {
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: menuOpen ? 0 : "5px",
+                gap: "5px",
                 cursor: "pointer",
                 padding: "0 10px",
-                flexShrink: 0,
-                transition: "border-color .2s",
               }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.borderColor = "#CC1F1F")
-              }
-              onMouseOut={(e) =>
-                (e.currentTarget.style.borderColor = "#252525")
-              }
-              aria-label="Menu"
             >
-              <span
-                style={{
-                  display: "block",
-                  width: "100%",
-                  height: 2,
-                  background: menuOpen ? "transparent" : "#f0ede8",
-                  transition: "all .25s",
-                  transform: menuOpen ? "rotate(45deg) translate(0,0)" : "none",
-                }}
-              />
               {[0, 1, 2].map((i) => (
                 <span
                   key={i}
                   style={{
-                    position: "absolute",
-                    width: 18,
+                    display: "block",
+                    width: "100%",
                     height: 2,
                     background: "#f0ede8",
-                    transition: "all .3s ease",
-                    transformOrigin: "center",
-                    ...(i === 0 && {
-                      transform: menuOpen
-                        ? "rotate(45deg)"
-                        : "translateY(-6px)",
-                    }),
-                    ...(i === 1 && {
-                      opacity: menuOpen ? 0 : 1,
-                    }),
-                    ...(i === 2 && {
-                      transform: menuOpen
-                        ? "rotate(-45deg)"
-                        : "translateY(6px)",
-                    }),
+                    borderRadius: 1,
                   }}
                 />
               ))}
@@ -616,9 +610,7 @@ const Header = ({ onNavClick }) => {
           </div>
         )}
       </header>
-
-      {/* Mobile dropdown menu */}
-      {isMobileHeader && menuOpen && (
+      {mob && menuOpen && (
         <div
           style={{
             position: "fixed",
@@ -632,17 +624,13 @@ const Header = ({ onNavClick }) => {
             padding: "1rem 1.25rem 1.5rem",
             display: "flex",
             flexDirection: "column",
-            gap: "0.25rem",
-            animation: "slideDown .2s ease",
+            gap: ".25rem",
           }}
         >
-          <style>{`@keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }`}</style>
-
-          {/* Nav links */}
-          {NAV_ITEMS.map((label) => (
+          {["Best Seller", "Katalog", "Lokasi"].map((l) => (
             <button
-              key={label}
-              onClick={() => handleNav(label)}
+              key={l}
+              onClick={() => nav(l)}
               style={{
                 background: "none",
                 border: "none",
@@ -651,18 +639,16 @@ const Header = ({ onNavClick }) => {
                 fontSize: "1rem",
                 fontWeight: 600,
                 cursor: "pointer",
-                fontFamily: "'DM Sans', sans-serif",
+                fontFamily: "'DM Sans',sans-serif",
                 textAlign: "left",
-                padding: "0.85rem 0",
+                padding: ".85rem 0",
                 width: "100%",
               }}
             >
-              {label}
+              {l}
             </button>
           ))}
-
-          {/* Socials row */}
-          <div style={{ display: "flex", gap: "0.6rem", marginTop: "0.75rem" }}>
+          <div style={{ display: "flex", gap: ".6rem", marginTop: ".75rem" }}>
             {SOCIALS.map(({ href, icon, title }) => (
               <a
                 key={title}
@@ -672,36 +658,23 @@ const Header = ({ onNavClick }) => {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: "0.4rem",
-                  padding: "0.5rem 0.85rem",
+                  gap: ".4rem",
+                  padding: ".5rem .85rem",
                   borderRadius: 8,
                   border: "1px solid #252525",
                   color: "#6e6b67",
                   textDecoration: "none",
-                  fontSize: "0.8rem",
+                  fontSize: ".8rem",
                   fontWeight: 600,
                   background: "#111",
                   flex: 1,
                   justifyContent: "center",
-                  transition: "all .2s",
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.borderColor = "#CC1F1F";
-                  e.currentTarget.style.color = "#CC1F1F";
-                  e.currentTarget.style.background = "#CC1F1F18";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.borderColor = "#252525";
-                  e.currentTarget.style.color = "#6e6b67";
-                  e.currentTarget.style.background = "#111";
                 }}
               >
                 {icon} {title}
               </a>
             ))}
           </div>
-
-          {/* WA full */}
           <a
             href={`https://wa.me/${WA}?text=${encodeURIComponent("Halo Kakak Dewa Sports, saya ingin bertanya.")}`}
             target="_blank"
@@ -710,22 +683,15 @@ const Header = ({ onNavClick }) => {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              gap: "0.5rem",
+              gap: ".5rem",
               background: "#25D366",
               color: "#fff",
-              padding: "0.75rem",
+              padding: ".75rem",
               borderRadius: 10,
-              fontSize: "0.9rem",
+              fontSize: ".9rem",
               fontWeight: 700,
               textDecoration: "none",
-              marginTop: "0.25rem",
-              transition: "all .2s",
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.background = "#1aab52";
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.background = "#25D366";
+              marginTop: ".25rem",
             }}
           >
             <WaIcon size={16} /> Hubungi via WhatsApp
@@ -736,7 +702,7 @@ const Header = ({ onNavClick }) => {
   );
 };
 
-// ── HERO ──────────────────────────────────────────────────────────
+// ── HERO ──
 const Hero = ({ total }) => (
   <section
     style={{
@@ -746,7 +712,6 @@ const Hero = ({ total }) => (
       overflow: "hidden",
     }}
   >
-    {/* glow */}
     <div
       style={{
         position: "absolute",
@@ -760,14 +725,13 @@ const Hero = ({ total }) => (
           "radial-gradient(ellipse 65% 55% at 50% 0%, rgba(204,31,31,.16) 0%, transparent 70%)",
       }}
     />
-
     <div style={{ position: "relative", zIndex: 1 }}>
       <div
         style={{
           display: "inline-flex",
           alignItems: "center",
           gap: ".5rem",
-          fontFamily: "'DM Mono', monospace",
+          fontFamily: "'DM Mono',monospace",
           fontSize: ".65rem",
           letterSpacing: "2.5px",
           color: "#CC1F1F",
@@ -781,7 +745,6 @@ const Hero = ({ total }) => (
       >
         ⚙ Senapan Angin Terpercaya Indonesia
       </div>
-
       <div
         style={{
           fontSize: "7rem",
@@ -810,13 +773,12 @@ const Hero = ({ total }) => (
           🏹
         </span>
       </div>
-
       <h1
         style={{
-          fontFamily: "'Bebas Neue', sans-serif",
+          fontFamily: "'Bebas Neue',sans-serif",
           letterSpacing: "4px",
           lineHeight: 0.93,
-          fontSize: "clamp(3rem,7.5vw,5rem)",
+          fontSize: "clamp(3rem,7.5vw,6.5rem)",
           marginBottom: "1rem",
         }}
       >
@@ -824,7 +786,6 @@ const Hero = ({ total }) => (
         <br />
         <span style={{ color: "#CC1F1F" }}>SPORTS</span>
       </h1>
-
       <p
         style={{
           color: "#6e6b67",
@@ -838,22 +799,20 @@ const Hero = ({ total }) => (
         <br />
         PCP, Uklik, Bocap, Gejluk — harga terbaik, gratis ongkir.
       </p>
-
-      {/* Trust badges */}
       <div
         style={{
           display: "flex",
-          justifyContent: "center",
-          gap: "1rem",
-          flexWrap: "wrap",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: ".6rem",
           marginBottom: "2.75rem",
         }}
       >
         {[
-          { ico: "🏆", label: "Toko Senapan Terpercaya", accent: "#CC1F1F" },
-          { ico: "💰", label: "Garansi Harga Termurah", accent: "#c8a84b" },
-          { ico: "🚚", label: "Gratis Ongkir se-Indonesia", accent: "#2ecc71" },
-        ].map(({ ico, label, accent }) => (
+          { ico: "🏆", label: "Toko Senapan Terpercaya", a: "#CC1F1F" },
+          { ico: "💰", label: "Garansi Harga Termurah", a: "#c8a84b" },
+          { ico: "🚚", label: "Gratis Ongkir se-Indonesia", a: "#2ecc71" },
+        ].map(({ ico, label, a }) => (
           <div
             key={label}
             style={{
@@ -866,7 +825,6 @@ const Hero = ({ total }) => (
               padding: ".45rem 1.25rem",
               fontSize: ".79rem",
               fontWeight: 600,
-              whiteSpace: "nowrap",
             }}
           >
             <div
@@ -874,7 +832,7 @@ const Hero = ({ total }) => (
                 width: 26,
                 height: 26,
                 borderRadius: "50%",
-                background: `${accent}18`,
+                background: `${a}18`,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -887,8 +845,6 @@ const Hero = ({ total }) => (
           </div>
         ))}
       </div>
-
-      {/* Stats */}
       <div
         style={{
           display: "inline-flex",
@@ -908,15 +864,15 @@ const Hero = ({ total }) => (
           <div
             key={lbl}
             style={{
-              padding: "1rem clamp(.75rem, 3vw, 2rem)",
+              padding: "1rem clamp(.75rem,3vw,2rem)",
               textAlign: "center",
               borderRight: i < 3 ? "1px solid #252525" : "none",
             }}
           >
             <span
               style={{
-                fontFamily: "'Bebas Neue', sans-serif",
-                fontSize: "clamp(1.4rem, 4vw, 1.9rem)",
+                fontFamily: "'Bebas Neue',sans-serif",
+                fontSize: "clamp(1.4rem,4vw,1.9rem)",
                 color: "#CC1F1F",
                 letterSpacing: "2px",
                 display: "block",
@@ -926,7 +882,7 @@ const Hero = ({ total }) => (
             </span>
             <span
               style={{
-                fontSize: "clamp(.55rem, 2vw, .65rem)",
+                fontSize: "clamp(.55rem,2vw,.65rem)",
                 color: "#6e6b67",
                 textTransform: "uppercase",
                 letterSpacing: "1px",
@@ -938,47 +894,77 @@ const Hero = ({ total }) => (
         ))}
       </div>
     </div>
-
-    <style>{`@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)} }`}</style>
+    <style>{`@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}`}</style>
   </section>
 );
 
-// ── CAROUSEL ──────────────────────────────────────────────────────
-const Carousel = ({ onOrder, onDetail }) => {
+// ── CAROUSEL ──
+const Carousel = ({ onDetail }) => {
   const [idx, setIdx] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const dragStart = useRef(null);
   const timerRef = useRef(null);
+
   const bsList = BEST_SELLER_IDS.map((id) =>
     PRODUCTS.find((p) => p.id === id),
   ).filter(Boolean);
+  const total = bsList.length;
 
   const go = useCallback(
     (i) => {
-      setIdx(i);
+      const next = ((i % total) + total) % total;
+      setIdx(next);
       clearInterval(timerRef.current);
       timerRef.current = setInterval(
-        () => setIdx((x) => (x + 1) % bsList.length),
-        4200,
+        () => setIdx((x) => (x + 1) % total),
+        5000,
       );
     },
-    [bsList.length],
+    [total],
   );
 
   useEffect(() => {
-    timerRef.current = setInterval(
-      () => setIdx((x) => (x + 1) % bsList.length),
-      4200,
-    );
+    timerRef.current = setInterval(() => setIdx((x) => (x + 1) % total), 5000);
     return () => clearInterval(timerRef.current);
-  }, [bsList.length]);
+  }, [total]);
 
-  const p = bsList[idx];
+  const onDragStart = (e) => {
+    dragStart.current = e.clientX ?? e.touches?.[0]?.clientX;
+    setDragging(true);
+  };
+  const onDragEnd = (e) => {
+    if (!dragging || dragStart.current === null) return;
+    const x = e.clientX ?? e.changedTouches?.[0]?.clientX ?? dragStart.current;
+    if (Math.abs(dragStart.current - x) > 40)
+      go(idx + (dragStart.current - x > 0 ? 1 : -1));
+    setDragging(false);
+    dragStart.current = null;
+  };
+
+  // posisi per offset dari tengah
+  const CFG = {
+    0: { x: 0, scale: 1, ry: 0, z: 100, op: 1, blur: 0 },
+    1: { x: 290, scale: 0.78, ry: -28, z: 50, op: 0.82, blur: 1 },
+    "-1": { x: -290, scale: 0.78, ry: 28, z: 50, op: 0.82, blur: 1 },
+    2: { x: 490, scale: 0.58, ry: -42, z: 10, op: 0.48, blur: 2.5 },
+    "-2": { x: -490, scale: 0.58, ry: 42, z: 10, op: 0.48, blur: 2.5 },
+  };
+
+  // warna unik per card buat bg (karena di artifact tidak ada foto produk)
+  const CARD_COLORS = [
+    ["#1a0505", "#CC1F1F"],
+    ["#051a0a", "#1a8c3a"],
+    ["#05101a", "#1a5c8c"],
+    ["#1a1205", "#8c6e1a"],
+    ["#15051a", "#7c1a8c"],
+  ];
 
   return (
     <div
       style={{
         maxWidth: 1400,
         margin: "0 auto",
-        padding: "3rem 2rem 1.5rem",
+        padding: "3rem 2rem 2rem",
         scrollMarginTop: 40,
       }}
       id="best-seller"
@@ -988,12 +974,12 @@ const Carousel = ({ onOrder, onDetail }) => {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: "1.25rem",
+          marginBottom: "2rem",
         }}
       >
         <div
           style={{
-            fontFamily: "'Bebas Neue', sans-serif",
+            fontFamily: "'Bebas Neue',sans-serif",
             fontSize: "1.7rem",
             letterSpacing: "3px",
           }}
@@ -1002,7 +988,7 @@ const Carousel = ({ onOrder, onDetail }) => {
         </div>
         <span
           style={{
-            fontFamily: "'DM Mono', monospace",
+            fontFamily: "'DM Mono',monospace",
             fontSize: ".63rem",
             letterSpacing: "2px",
             color: "#CC1F1F",
@@ -1017,283 +1003,303 @@ const Carousel = ({ onOrder, onDetail }) => {
         </span>
       </div>
 
+      {/* 3D Stage */}
       <div
+        onMouseDown={onDragStart}
+        onMouseUp={onDragEnd}
+        onMouseLeave={onDragEnd}
+        onTouchStart={onDragStart}
+        onTouchEnd={onDragEnd}
         style={{
-          borderRadius: 14,
-          border: "1px solid #252525",
-          overflow: "hidden",
-          background: "#111",
+          position: "relative",
+          height: 420,
+          perspective: "1200px",
+          cursor: dragging ? "grabbing" : "grab",
+          userSelect: "none",
+          marginBottom: "2rem",
         }}
       >
-        {/* Slide */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            minHeight: 300,
-          }}
-        >
-          {/* Content */}
-          <div
+        {/* Arrow buttons */}
+        {[
+          { dir: -1, side: "left", label: "‹" },
+          { dir: 1, side: "right", label: "›" },
+        ].map(({ dir, side, label }) => (
+          <button
+            key={side}
+            onClick={() => go(idx + dir)}
             style={{
-              padding: "2.5rem 2.75rem",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-            }}
-          >
-            <span
-              style={{
-                display: "inline-block",
-                fontFamily: "'DM Mono', monospace",
-                fontSize: ".6rem",
-                letterSpacing: "2px",
-                padding: ".22rem .6rem",
-                borderRadius: 3,
-                background: "#CC1F1F",
-                color: "#fff",
-                textTransform: "uppercase",
-                marginBottom: ".75rem",
-                width: "fit-content",
-              }}
-            >
-              🔥 Best Seller #{idx + 1}
-            </span>
-            <div
-              style={{
-                fontFamily: "'DM Mono', monospace",
-                fontSize: ".65rem",
-                color: "#CC1F1F",
-                letterSpacing: "3px",
-                textTransform: "uppercase",
-                marginBottom: ".2rem",
-              }}
-            >
-              {p.brand}
-            </div>
-            <div
-              style={{
-                fontFamily: "'Bebas Neue', sans-serif",
-                fontSize: "2.2rem",
-                letterSpacing: "2px",
-                lineHeight: 1.05,
-                marginBottom: ".7rem",
-              }}
-            >
-              {p.name}
-            </div>
-            <div
-              style={{
-                fontSize: ".84rem",
-                color: "#6e6b67",
-                lineHeight: 1.65,
-                marginBottom: "1.4rem",
-                maxWidth: 380,
-              }}
-            >
-              {p.desc.slice(0, 115)}…
-            </div>
-            <div
-              style={{
-                fontFamily: "'Bebas Neue', sans-serif",
-                fontSize: "2.6rem",
-                color: "#CC1F1F",
-                letterSpacing: "2px",
-                marginBottom: "1.2rem",
-              }}
-            >
-              {fmt(p.price)}
-            </div>
-            <div style={{ display: "flex", gap: ".7rem", flexWrap: "wrap" }}>
-              <a
-                href={waLink(p)}
-                target="_blank"
-                rel="noreferrer"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: ".45rem",
-                  background: "#CC1F1F",
-                  color: "#fff",
-                  textDecoration: "none",
-                  padding: ".62rem 1.2rem",
-                  borderRadius: 8,
-                  fontWeight: 700,
-                  fontSize: ".84rem",
-                  transition: "all .2s",
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.background = "#b81818";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.background = "#CC1F1F";
-                }}
-              >
-                <WaIcon size={14} /> Pesan Sekarang
-              </a>
-              <button
-                onClick={() => onDetail(p)}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: ".45rem",
-                  background: "transparent",
-                  color: "#6e6b67",
-                  padding: ".62rem 1.1rem",
-                  borderRadius: 8,
-                  fontSize: ".84rem",
-                  border: "1px solid #252525",
-                  cursor: "pointer",
-                  fontFamily: "'DM Sans', sans-serif",
-                  transition: "all .2s",
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.borderColor = "#CC1F1F";
-                  e.currentTarget.style.color = "#CC1F1F";
-                  e.currentTarget.style.background = "#CC1F1F18";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.borderColor = "#252525";
-                  e.currentTarget.style.color = "#6e6b67";
-                  e.currentTarget.style.background = "#111";
-                }}
-              >
-                Lihat Detail
-              </button>
-            </div>
-          </div>
-
-          {/* Visual */}
-          <div
-            style={{
+              position: "absolute",
+              [side]: 0,
+              top: "50%",
+              transform: "translateY(-50%)",
+              zIndex: 200,
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              borderRadius: "50%",
+              width: 48,
+              height: 48,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: "8rem",
-              position: "relative",
-              background: "linear-gradient(135deg,#191919,#111)",
-              overflow: "hidden",
+              cursor: "pointer",
+              color: "#fff",
+              fontSize: "1.4rem",
+              backdropFilter: "blur(8px)",
+              transition: "background .2s",
             }}
+            onMouseOver={(e) =>
+              (e.currentTarget.style.background = "rgba(204,31,31,.6)")
+            }
+            onMouseOut={(e) =>
+              (e.currentTarget.style.background = "rgba(255,255,255,0.08)")
+            }
           >
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background:
-                  "radial-gradient(ellipse 80% 80% at 60% 50%, rgba(204,31,31,.09) 0%, transparent 65%)",
-              }}
-            />
-            <span
-              style={{
-                position: "relative",
-                zIndex: 1,
-                transition: "opacity .3s",
-              }}
-            >
-              {p.emoji}
-            </span>
-            <span
-              style={{
-                position: "absolute",
-                bottom: ".75rem",
-                right: "1.25rem",
-                fontFamily: "'Bebas Neue', sans-serif",
-                fontSize: "5rem",
-                color: "rgba(255,255,255,.04)",
-                lineHeight: 1,
-              }}
-            >
-              {String(idx + 1).padStart(2, "0")}
-            </span>
-          </div>
-        </div>
+            {label}
+          </button>
+        ))}
 
-        {/* Progress bar */}
-        <div style={{ height: 2, background: "#252525" }}>
-          <div
-            key={idx}
-            style={{
-              height: "100%",
-              background: "#CC1F1F",
-              animation: "progress 4.2s linear forwards",
-            }}
-          />
-        </div>
+        {/* Cards */}
+        {bsList.map((p, i) => {
+          const raw = (((i - idx + total) % total) + total) % total;
+          const norm = raw > total / 2 ? raw - total : raw;
+          const cfg = CFG[String(norm)];
+          if (!cfg) return null;
+          const isActive = norm === 0;
+          const [bg, accent] = CARD_COLORS[i % CARD_COLORS.length];
+
+          return (
+            <div
+              key={p.id}
+              onClick={() => (Math.abs(norm) > 0 ? go(i) : onDetail(p))}
+              style={{
+                position: "absolute",
+                left: "50%",
+                top: "50%",
+                width: 340,
+                height: 380,
+                marginLeft: -170,
+                marginTop: -190,
+                borderRadius: 18,
+                overflow: "hidden",
+                cursor: "pointer",
+                transform: `translateX(${cfg.x}px) scale(${cfg.scale}) rotateY(${cfg.ry}deg) translateZ(${cfg.z}px)`,
+                opacity: cfg.op,
+                filter: cfg.blur > 0 ? `blur(${cfg.blur}px)` : "none",
+                transition: dragging
+                  ? "none"
+                  : "all .55s cubic-bezier(0.25,0.46,0.45,0.94)",
+                zIndex: isActive ? 100 : Math.abs(norm) === 1 ? 50 : 10,
+                transformStyle: "preserve-3d",
+                boxShadow: isActive
+                  ? "0 32px 80px rgba(0,0,0,.7), 0 0 0 1px rgba(204,31,31,.35)"
+                  : "0 16px 40px rgba(0,0,0,.45)",
+              }}
+            >
+              {/* Card background dengan warna unik + emoji besar */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: `radial-gradient(ellipse at 50% 35%, ${accent}40 0%, ${bg} 65%)`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "7.5rem",
+                    opacity: isActive ? 0.9 : 0.7,
+                    filter: isActive ? "none" : "grayscale(30%)",
+                    transition: "all .4s",
+                  }}
+                >
+                  {p.emoji}
+                </span>
+              </div>
+
+              {/* Subtle grid texture overlay */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  backgroundImage: `linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px)`,
+                  backgroundSize: "24px 24px",
+                }}
+              />
+
+              {/* Active glow */}
+              {isActive && (
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background:
+                      "radial-gradient(ellipse at 50% 100%, rgba(204,31,31,.22) 0%, transparent 65%)",
+                    pointerEvents: "none",
+                  }}
+                />
+              )}
+
+              {/* Bottom gradient + text */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background:
+                    "linear-gradient(to top, rgba(0,0,0,.95) 0%, rgba(0,0,0,.6) 42%, rgba(0,0,0,.1) 65%, transparent 100%)",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "flex-end",
+                  padding: isActive ? "1.4rem" : "1rem",
+                }}
+              >
+                {isActive && (
+                  <span
+                    style={{
+                      fontFamily: "'DM Mono',monospace",
+                      fontSize: ".55rem",
+                      letterSpacing: "2px",
+                      color: "#CC1F1F",
+                      background: "rgba(204,31,31,.18)",
+                      border: "1px solid rgba(204,31,31,.4)",
+                      borderRadius: 3,
+                      padding: ".15rem .5rem",
+                      textTransform: "uppercase",
+                      marginBottom: ".5rem",
+                      width: "fit-content",
+                    }}
+                  >
+                    🔥 Best Seller #{i + 1}
+                  </span>
+                )}
+                <div
+                  style={{
+                    fontFamily: "'Bebas Neue',sans-serif",
+                    fontSize: isActive ? "1.55rem" : "1.05rem",
+                    letterSpacing: "2px",
+                    color: "#fff",
+                    lineHeight: 1.1,
+                    marginBottom: ".35rem",
+                    textShadow: "0 2px 8px rgba(0,0,0,.9)",
+                  }}
+                >
+                  {p.name}
+                </div>
+                {isActive && (
+                  <>
+                    <div
+                      style={{
+                        fontSize: ".76rem",
+                        color: "rgba(255,255,255,.68)",
+                        lineHeight: 1.55,
+                        marginBottom: ".85rem",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {p.desc}
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        flexWrap: "wrap",
+                        gap: ".5rem",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontFamily: "'Bebas Neue',sans-serif",
+                          fontSize: "1.5rem",
+                          color: "#CC1F1F",
+                          letterSpacing: "1px",
+                          textShadow: "0 0 20px rgba(204,31,31,.35)",
+                        }}
+                      >
+                        {fmt(p.price)}
+                      </span>
+                      <a
+                        href={waLink(p)}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: ".35rem",
+                          background: "#25D366",
+                          color: "#fff",
+                          textDecoration: "none",
+                          padding: ".45rem .9rem",
+                          borderRadius: 8,
+                          fontWeight: 700,
+                          fontSize: ".78rem",
+                        }}
+                      >
+                        <WaIcon size={13} /> Pesan
+                      </a>
+                    </div>
+                  </>
+                )}
+                {Math.abs(norm) === 1 && (
+                  <div
+                    style={{
+                      fontSize: ".7rem",
+                      color: "rgba(255,255,255,.45)",
+                      fontFamily: "'DM Mono',monospace",
+                    }}
+                  >
+                    {fmt(p.price)}
+                  </div>
+                )}
+              </div>
+
+              {/* Active border ring */}
+              {isActive && (
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    borderRadius: 18,
+                    border: "1px solid rgba(204,31,31,.5)",
+                    pointerEvents: "none",
+                  }}
+                />
+              )}
+            </div>
+          );
+        })}
       </div>
 
-      {/* Controls */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: ".7rem",
-          marginTop: "1rem",
-        }}
-      >
-        <button
-          onClick={() => go((idx - 1 + bsList.length) % bsList.length)}
-          style={{
-            background: "#111",
-            border: "1px solid #252525",
-            color: "#6e6b67",
-            width: 32,
-            height: 32,
-            borderRadius: "50%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            fontSize: ".95rem",
-          }}
-        >
-          ‹
-        </button>
+      {/* Dots */}
+      <div style={{ display: "flex", justifyContent: "center", gap: ".4rem" }}>
         {bsList.map((_, i) => (
           <button
             key={i}
             onClick={() => go(i)}
             style={{
-              width: i === idx ? 22 : 6,
-              height: 6,
-              borderRadius: 3,
-              background: i === idx ? "#CC1F1F" : "#252525",
+              width: i === idx ? 22 : 8,
+              height: 8,
+              borderRadius: 4,
+              background: i === idx ? "#CC1F1F" : "rgba(255,255,255,.2)",
               border: "none",
               cursor: "pointer",
               transition: "all .3s",
+              padding: 0,
             }}
           />
         ))}
-        <button
-          onClick={() => go((idx + 1) % bsList.length)}
-          style={{
-            background: "#111",
-            border: "1px solid #252525",
-            color: "#6e6b67",
-            width: 32,
-            height: 32,
-            borderRadius: "50%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            fontSize: ".95rem",
-          }}
-        >
-          ›
-        </button>
       </div>
-
-      <style>{`@keyframes progress { from{width:0} to{width:100%} }`}</style>
     </div>
   );
 };
 
-// ── PRODUCT IMAGE COMPONENTS ──────────────────────────────────────
-// Format file foto: public/products/{id}.jpg
-// Ganti "jpg" di bawah kalau kamu pakai png atau webp
+// ── PRODUCT IMAGES ──
 const IMG_EXT = "png";
-
 const ProductThumb = ({ p }) => {
   const [err, setErr] = useState(false);
   return (
@@ -1324,16 +1330,14 @@ const ProductThumb = ({ p }) => {
         </>
       ) : (
         <img
-          src={`/products/${p.id}.${IMG_EXT}`}
+          src={`/products/${p.images ? p.images[0] : p.id}.${IMG_EXT}`}
           alt={p.name}
           onError={() => setErr(true)}
           style={{
             width: "100%",
             height: "100%",
             objectFit: "contain",
-            objectPosition: "center",
-            padding: "0.5rem",
-            zIndex: 1,
+            padding: ".5rem",
           }}
         />
       )}
@@ -1341,38 +1345,23 @@ const ProductThumb = ({ p }) => {
   );
 };
 
-// Slider gambar di modal — support single foto maupun multi-varian
-// Produk single  → images: undefined  → pakai /products/{id}.{ext}
-// Produk varian  → images: ["5-1","5-2","5-3"]  → pakai /products/{slug}.{ext}
 const ModalImageSlider = ({ p }) => {
-  // Bangun daftar slug gambar
-  const slugs = p.images
-    ? p.images // varian: array slug custom
-    : [`${p.id}`]; // biasa: cukup id
-
+  const slugs = p.images ? p.images : [`${p.id}`];
   const [idx, setIdx] = useState(0);
   const [errs, setErrs] = useState({});
-
-  // Reset index tiap produk ganti
   useEffect(() => {
     setIdx(0);
     setErrs({});
   }, [p.id]);
-
   const total = slugs.length;
-  const prev = () => setIdx((i) => (i - 1 + total) % total);
-  const next = () => setIdx((i) => (i + 1) % total);
   const slug = slugs[idx];
   const src = `/products/${slug}.${IMG_EXT}`;
-  const hasErr = errs[slug];
 
-  // label varian — ambil dari p.variantLabels jika ada
+  const hasErr = errs[slug];
   const label =
     p.variantLabels?.[idx] ?? (total > 1 ? `Varian ${idx + 1}` : null);
-
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
-      {/* Gambar */}
       {hasErr ? (
         <div
           style={{
@@ -1382,8 +1371,8 @@ const ModalImageSlider = ({ p }) => {
             alignItems: "center",
             justifyContent: "center",
             fontSize: "7rem",
-            position: "relative",
             zIndex: 2,
+            position: "relative",
           }}
         >
           <span>{p.emoji}</span>
@@ -1398,7 +1387,6 @@ const ModalImageSlider = ({ p }) => {
             width: "100%",
             height: "100%",
             objectFit: "contain",
-            objectPosition: "center",
             position: "relative",
             zIndex: 2,
             display: "block",
@@ -1407,12 +1395,10 @@ const ModalImageSlider = ({ p }) => {
           }}
         />
       )}
-
-      {/* Arrow kiri & kanan — hanya tampil kalau > 1 foto */}
       {total > 1 && (
         <>
           <button
-            onClick={prev}
+            onClick={() => setIdx((i) => (i - 1 + total) % total)}
             style={{
               position: "absolute",
               left: 12,
@@ -1430,8 +1416,6 @@ const ModalImageSlider = ({ p }) => {
               cursor: "pointer",
               color: "#fff",
               fontSize: "1.1rem",
-              backdropFilter: "blur(4px)",
-              transition: "background .2s",
             }}
             onMouseOver={(e) =>
               (e.currentTarget.style.background = "rgba(204,31,31,.75)")
@@ -1442,9 +1426,8 @@ const ModalImageSlider = ({ p }) => {
           >
             ‹
           </button>
-
           <button
-            onClick={next}
+            onClick={() => setIdx((i) => (i + 1) % total)}
             style={{
               position: "absolute",
               right: 12,
@@ -1462,8 +1445,6 @@ const ModalImageSlider = ({ p }) => {
               cursor: "pointer",
               color: "#fff",
               fontSize: "1.1rem",
-              backdropFilter: "blur(4px)",
-              transition: "background .2s",
             }}
             onMouseOver={(e) =>
               (e.currentTarget.style.background = "rgba(204,31,31,.75)")
@@ -1474,8 +1455,6 @@ const ModalImageSlider = ({ p }) => {
           >
             ›
           </button>
-
-          {/* Label varian + counter */}
           <div
             style={{
               position: "absolute",
@@ -1496,7 +1475,7 @@ const ModalImageSlider = ({ p }) => {
             {label && (
               <span
                 style={{
-                  fontFamily: "'DM Sans', sans-serif",
+                  fontFamily: "'DM Sans',sans-serif",
                   fontSize: ".72rem",
                   fontWeight: 600,
                   color: "#f0ede8",
@@ -1516,7 +1495,7 @@ const ModalImageSlider = ({ p }) => {
             )}
             <span
               style={{
-                fontFamily: "'DM Mono', monospace",
+                fontFamily: "'DM Mono',monospace",
                 fontSize: ".65rem",
                 color: "#f0ede8",
               }}
@@ -1524,8 +1503,6 @@ const ModalImageSlider = ({ p }) => {
               {idx + 1} / {total}
             </span>
           </div>
-
-          {/* Dot indicators */}
           <div
             style={{
               position: "absolute",
@@ -1545,7 +1522,7 @@ const ModalImageSlider = ({ p }) => {
                   width: i === idx ? 18 : 6,
                   height: 6,
                   borderRadius: 3,
-                  background: i === idx ? "#CC1F1F" : "rgba(0, 0, 0, 0.55)",
+                  background: i === idx ? "#CC1F1F" : "rgba(0,0,0,.55)",
                   border: "none",
                   cursor: "pointer",
                   padding: 0,
@@ -1560,7 +1537,7 @@ const ModalImageSlider = ({ p }) => {
   );
 };
 
-// ── PRODUCT CARD ──────────────────────────────────────────────────
+// ── PRODUCT CARD ──
 const ProductCard = ({ p, idx, onDetail }) => (
   <div
     onClick={() => onDetail(p)}
@@ -1586,14 +1563,11 @@ const ProductCard = ({ p, idx, onDetail }) => (
     }}
   >
     <Badge badge={p.badge} />
-
-    {/* Thumb */}
     <ProductThumb p={p} />
-
     <div style={{ padding: ".95rem 1.05rem 1.05rem" }}>
       <div
         style={{
-          fontFamily: "'DM Mono', monospace",
+          fontFamily: "'DM Mono',monospace",
           fontSize: ".6rem",
           color: "#CC1F1F",
           letterSpacing: "2px",
@@ -1613,7 +1587,6 @@ const ProductCard = ({ p, idx, onDetail }) => (
       >
         {p.name}
       </div>
-
       <div
         style={{
           display: "flex",
@@ -1632,14 +1605,13 @@ const ProductCard = ({ p, idx, onDetail }) => (
               border: "1px solid #252525",
               borderRadius: 4,
               color: "#6e6b67",
-              fontFamily: "'DM Mono', monospace",
+              fontFamily: "'DM Mono',monospace",
             }}
           >
             {t}
           </span>
         ))}
       </div>
-
       <div
         style={{
           display: "flex",
@@ -1652,7 +1624,7 @@ const ProductCard = ({ p, idx, onDetail }) => (
         <div>
           <div
             style={{
-              fontFamily: "'Bebas Neue', sans-serif",
+              fontFamily: "'Bebas Neue',sans-serif",
               fontSize: "1.25rem",
               letterSpacing: "1px",
               color: "#CC1F1F",
@@ -1682,13 +1654,6 @@ const ProductCard = ({ p, idx, onDetail }) => (
             fontWeight: 700,
             cursor: "pointer",
             textDecoration: "none",
-            transition: "all .2s",
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.background = "#1aab52";
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.background = "#25D366";
           }}
         >
           <WaIcon size={12} /> Order
@@ -1698,21 +1663,20 @@ const ProductCard = ({ p, idx, onDetail }) => (
   </div>
 );
 
-// ── CATALOG ───────────────────────────────────────────────────────
+// ── CATALOG ──
 const Catalog = ({ onDetail }) => {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("");
   const [activeType, setActiveType] = useState("all");
-
   const filtered = PRODUCTS.filter((p) => {
     const q = query.toLowerCase();
-    const mq =
-      !q ||
-      [p.name, p.brand, p.type, p.caliber].some((s) =>
-        s.toLowerCase().includes(q),
-      );
-    const mt = activeType === "all" || p.type === activeType;
-    return mq && mt;
+    return (
+      (!q ||
+        [p.name, p.brand, p.type, p.caliber].some((s) =>
+          s.toLowerCase().includes(q),
+        )) &&
+      (activeType === "all" || p.type === activeType)
+    );
   }).sort((a, b) => {
     if (sort === "pa") return a.price - b.price;
     if (sort === "pd") return b.price - a.price;
@@ -1720,22 +1684,12 @@ const Catalog = ({ onDetail }) => {
     if (sort === "nd") return b.name.localeCompare(a.name);
     return 0;
   });
-
   return (
     <section
-      style={{
-        maxWidth: 1400,
-        margin: "0 auto",
-        padding: "3rem 2rem",
-        scrollMarginTop: 40,
-      }}
+      style={{ maxWidth: 1400, margin: "0 auto", padding: "3rem 2rem" }}
       id="katalog"
     >
-      <style>{`
-        @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
-        select option { background: #191919; }
-      `}</style>
-
+      <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}} select option{background:#191919;}`}</style>
       <div
         style={{
           display: "flex",
@@ -1749,7 +1703,7 @@ const Catalog = ({ onDetail }) => {
         <div>
           <div
             style={{
-              fontFamily: "'Bebas Neue', sans-serif",
+              fontFamily: "'Bebas Neue',sans-serif",
               fontSize: "1.7rem",
               letterSpacing: "3px",
             }}
@@ -1758,7 +1712,7 @@ const Catalog = ({ onDetail }) => {
           </div>
           <div
             style={{
-              fontFamily: "'DM Mono', monospace",
+              fontFamily: "'DM Mono',monospace",
               fontSize: ".7rem",
               color: "#6e6b67",
               marginTop: ".25rem",
@@ -1768,8 +1722,6 @@ const Catalog = ({ onDetail }) => {
           </div>
         </div>
       </div>
-
-      {/* Filters */}
       <div
         style={{
           background: "#111",
@@ -1783,7 +1735,6 @@ const Catalog = ({ onDetail }) => {
           alignItems: "center",
         }}
       >
-        {/* Search */}
         <div style={{ flex: 1, minWidth: 200, position: "relative" }}>
           <div
             style={{
@@ -1808,7 +1759,7 @@ const Catalog = ({ onDetail }) => {
               border: "1px solid #252525",
               borderRadius: 8,
               color: "#f0ede8",
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: "'DM Sans',sans-serif",
               fontSize: ".87rem",
               padding: ".58rem .8rem .58rem 2.3rem",
               outline: "none",
@@ -1817,8 +1768,6 @@ const Catalog = ({ onDetail }) => {
             onBlur={(e) => (e.target.style.borderColor = "#252525")}
           />
         </div>
-
-        {/* Sort */}
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value)}
@@ -1827,7 +1776,7 @@ const Catalog = ({ onDetail }) => {
             border: "1px solid #252525",
             borderRadius: 8,
             color: "#f0ede8",
-            fontFamily: "'DM Sans', sans-serif",
+            fontFamily: "'DM Sans',sans-serif",
             fontSize: ".84rem",
             padding: ".58rem .75rem",
             outline: "none",
@@ -1840,8 +1789,6 @@ const Catalog = ({ onDetail }) => {
             </option>
           ))}
         </select>
-
-        {/* Type chips */}
         <div style={{ display: "flex", gap: ".4rem", flexWrap: "wrap" }}>
           {TYPES.map((t) => (
             <button
@@ -1855,7 +1802,7 @@ const Catalog = ({ onDetail }) => {
                 background: activeType === t.key ? "#CC1F1F" : "transparent",
                 color: activeType === t.key ? "#fff" : "#6e6b67",
                 cursor: "pointer",
-                fontFamily: "'DM Sans', sans-serif",
+                fontFamily: "'DM Sans',sans-serif",
                 fontWeight: activeType === t.key ? 700 : 500,
                 transition: "all .2s",
               }}
@@ -1865,8 +1812,6 @@ const Catalog = ({ onDetail }) => {
           ))}
         </div>
       </div>
-
-      {/* Grid */}
       {filtered.length === 0 ? (
         <div
           style={{
@@ -1902,16 +1847,14 @@ const Catalog = ({ onDetail }) => {
   );
 };
 
-// ── MODAL ─────────────────────────────────────────────────────────
+// ── MODAL ──
 const Modal = ({ product, onClose }) => {
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-
+  const [mob, setMob] = useState(window.innerWidth < 768);
   useEffect(() => {
-    const onResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    const fn = () => setMob(window.innerWidth < 768);
+    window.addEventListener("resize", fn);
+    return () => window.removeEventListener("resize", fn);
   }, []);
-
   useEffect(() => {
     if (product) document.body.style.overflow = "hidden";
     else document.body.style.overflow = "";
@@ -1921,10 +1864,8 @@ const Modal = ({ product, onClose }) => {
     window.addEventListener("keydown", esc);
     return () => window.removeEventListener("keydown", esc);
   }, [product, onClose]);
-
   if (!product) return null;
   const p = product;
-
   return (
     <div
       onClick={(e) => {
@@ -1939,38 +1880,33 @@ const Modal = ({ product, onClose }) => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: isMobile ? "0" : "1rem",
+        padding: mob ? "0" : "1rem",
         animation: "fadeIn .25s ease",
       }}
     >
-      <style>{`
-        @keyframes fadeIn  { from{opacity:0} to{opacity:1} }
-        @keyframes slideUp { from{transform:translateY(28px) scale(.97)} to{transform:translateY(0) scale(1)} }
-      `}</style>
-
+      <style>{`@keyframes fadeIn{from{opacity:0}to{opacity:1}} @keyframes slideUp{from{transform:translateY(28px) scale(.97)}to{transform:translateY(0) scale(1)}}`}</style>
       <div
         style={{
           background: "#111",
-          border: isMobile ? "none" : "1px solid #252525",
-          borderRadius: isMobile ? "20px 20px 0 0" : 16,
+          border: mob ? "none" : "1px solid #252525",
+          borderRadius: mob ? "20px 20px 0 0" : 16,
           width: "100%",
           maxWidth: 980,
-          maxHeight: isMobile ? "95vh" : "90vh",
+          maxHeight: mob ? "95vh" : "90vh",
           overflowY: "auto",
-          position: isMobile ? "fixed" : "relative",
-          bottom: isMobile ? 0 : "auto",
+          position: mob ? "fixed" : "relative",
+          bottom: mob ? 0 : "auto",
           display: "flex",
-          flexDirection: isMobile ? "column" : "row",
+          flexDirection: mob ? "column" : "row",
           animation: "slideUp .3s ease",
         }}
       >
-        {/* ── KIRI: Image slider ── */}
         <div
           style={{
-            width: isMobile ? "100%" : "420px",
+            width: mob ? "100%" : "420px",
             flexShrink: 0,
             background: "#f8f8f8",
-            borderRadius: isMobile ? "20px 20px 0 0" : "16px 0 0 16px",
+            borderRadius: mob ? "20px 20px 0 0" : "16px 0 0 16px",
             position: "relative",
             overflow: "hidden",
             aspectRatio: "1/1",
@@ -1978,22 +1914,16 @@ const Modal = ({ product, onClose }) => {
         >
           <ModalImageSlider p={p} />
         </div>
-
-        {/* ── KANAN: Info ── */}
         <div
           style={{
             flex: 1,
-            padding: isMobile
-              ? "1.5rem 1.25rem 2rem"
-              : "2rem 2rem 2rem 1.75rem",
-            overflowY: isMobile ? "visible" : "auto",
+            padding: mob ? "1.5rem 1.25rem 2rem" : "2rem 2rem 2rem 1.75rem",
+            overflowY: mob ? "visible" : "auto",
             display: "flex",
             flexDirection: "column",
-            gap: 0,
             position: "relative",
           }}
         >
-          {/* Tombol tutup */}
           <button
             onClick={onClose}
             style={{
@@ -2012,7 +1942,6 @@ const Modal = ({ product, onClose }) => {
               color: "#6e6b67",
               fontSize: ".95rem",
               zIndex: 10,
-              flexShrink: 0,
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.borderColor = "#CC1F1F";
@@ -2025,11 +1954,9 @@ const Modal = ({ product, onClose }) => {
           >
             ✕
           </button>
-
-          {/* Brand + Name */}
           <div
             style={{
-              fontFamily: "'DM Mono', monospace",
+              fontFamily: "'DM Mono',monospace",
               fontSize: ".63rem",
               color: "#CC1F1F",
               letterSpacing: "3px",
@@ -2042,8 +1969,8 @@ const Modal = ({ product, onClose }) => {
           </div>
           <div
             style={{
-              fontFamily: "'Bebas Neue', sans-serif",
-              fontSize: isMobile ? "1.75rem" : "2rem",
+              fontFamily: "'Bebas Neue',sans-serif",
+              fontSize: mob ? "1.75rem" : "2rem",
               letterSpacing: "2px",
               lineHeight: 1.05,
               marginBottom: ".75rem",
@@ -2052,12 +1979,10 @@ const Modal = ({ product, onClose }) => {
           >
             {p.name}
           </div>
-
-          {/* Type chip */}
           <div style={{ marginBottom: "1rem" }}>
             <span
               style={{
-                fontFamily: "'DM Mono', monospace",
+                fontFamily: "'DM Mono',monospace",
                 fontSize: ".62rem",
                 letterSpacing: "1.5px",
                 textTransform: "uppercase",
@@ -2071,23 +1996,20 @@ const Modal = ({ product, onClose }) => {
               {p.type.toUpperCase()}
             </span>
           </div>
-
-          {/* Harga */}
           <div
             style={{
-              fontFamily: "'Bebas Neue', sans-serif",
-              fontSize: isMobile ? "2.2rem" : "2.6rem",
+              fontFamily: "'Bebas Neue',sans-serif",
+              fontSize: mob ? "2.2rem" : "2.6rem",
               color: "#CC1F1F",
               letterSpacing: "2px",
               marginBottom: "1.25rem",
-              textShadow: "0 0 30px rgba(204,31,31,.2)",
               lineHeight: 1,
             }}
           >
             {fmt(p.price)}
             <span
               style={{
-                fontFamily: "'DM Sans', sans-serif",
+                fontFamily: "'DM Sans',sans-serif",
                 fontSize: ".7rem",
                 color: "#6e6b67",
                 fontWeight: 400,
@@ -2098,8 +2020,6 @@ const Modal = ({ product, onClose }) => {
               / unit
             </span>
           </div>
-
-          {/* Specs grid — 2 kolom */}
           <div
             style={{
               display: "grid",
@@ -2132,7 +2052,7 @@ const Modal = ({ product, onClose }) => {
                     textTransform: "uppercase",
                     letterSpacing: "1px",
                     marginBottom: ".15rem",
-                    fontFamily: "'DM Mono', monospace",
+                    fontFamily: "'DM Mono',monospace",
                   }}
                 >
                   {l}
@@ -2149,8 +2069,6 @@ const Modal = ({ product, onClose }) => {
               </div>
             ))}
           </div>
-
-          {/* Desc */}
           <div
             style={{
               color: "#6e6b67",
@@ -2166,8 +2084,6 @@ const Modal = ({ product, onClose }) => {
           >
             {p.desc}
           </div>
-
-          {/* Actions */}
           <div
             style={{ display: "flex", flexDirection: "column", gap: ".6rem" }}
           >
@@ -2187,7 +2103,6 @@ const Modal = ({ product, onClose }) => {
                 borderRadius: 10,
                 fontWeight: 700,
                 fontSize: ".94rem",
-                transition: "background .2s",
               }}
               onMouseOver={(e) =>
                 (e.currentTarget.style.background = "#1aab52")
@@ -2210,8 +2125,7 @@ const Modal = ({ product, onClose }) => {
                 fontSize: ".84rem",
                 border: "1px solid #252525",
                 cursor: "pointer",
-                fontFamily: "'DM Sans', sans-serif",
-                transition: "all .2s",
+                fontFamily: "'DM Sans',sans-serif",
               }}
               onMouseOver={(e) => {
                 e.currentTarget.style.borderColor = "#6e6b67";
@@ -2231,19 +2145,15 @@ const Modal = ({ product, onClose }) => {
   );
 };
 
-// ── LOCATION ──────────────────────────────────────────────────────
+// ── LOCATION ──
 const Location = () => (
   <section
-    style={{
-      maxWidth: 1400,
-      margin: "0 auto",
-      padding: "2rem 2rem 5rem",
-    }}
+    style={{ maxWidth: 1400, margin: "0 auto", padding: "2rem 2rem 5rem" }}
     id="lokasi"
   >
     <div
       style={{
-        fontFamily: "'Bebas Neue', sans-serif",
+        fontFamily: "'Bebas Neue',sans-serif",
         fontSize: "1.7rem",
         letterSpacing: "3px",
         marginBottom: "1.25rem",
@@ -2251,7 +2161,6 @@ const Location = () => (
     >
       LOKASI TOKO
     </div>
-
     <div
       style={{
         background: "#111",
@@ -2262,11 +2171,10 @@ const Location = () => (
         gridTemplateColumns: "1fr 1fr",
       }}
     >
-      {/* Info */}
       <div style={{ padding: "2.5rem" }}>
         <div
           style={{
-            fontFamily: "'Bebas Neue', sans-serif",
+            fontFamily: "'Bebas Neue',sans-serif",
             fontSize: "1.5rem",
             letterSpacing: "3px",
             color: "#CC1F1F",
@@ -2284,7 +2192,6 @@ const Location = () => (
         >
           Kunjungi kami — lihat langsung sebelum memutuskan
         </div>
-
         {[
           {
             icon: <PinIcon />,
@@ -2314,7 +2221,6 @@ const Location = () => (
             <span style={{ whiteSpace: "pre-line" }}>{text}</span>
           </div>
         ))}
-
         <div
           style={{
             display: "flex",
@@ -2396,8 +2302,6 @@ const Location = () => (
           ))}
         </div>
       </div>
-
-      {/* Map */}
       <div
         style={{
           borderLeft: "1px solid #252525",
@@ -2423,7 +2327,7 @@ const Location = () => (
   </section>
 );
 
-// ── FOOTER ────────────────────────────────────────────────────────
+// ── FOOTER ──
 const Footer = () => (
   <footer style={{ borderTop: "1px solid #252525", padding: "2rem" }}>
     <div
@@ -2442,7 +2346,7 @@ const Footer = () => (
         <div>
           <div
             style={{
-              fontFamily: "'Bebas Neue', sans-serif",
+              fontFamily: "'Bebas Neue',sans-serif",
               fontSize: ".95rem",
               letterSpacing: "2px",
             }}
@@ -2451,7 +2355,7 @@ const Footer = () => (
           </div>
           <div
             style={{
-              fontFamily: "'DM Mono', monospace",
+              fontFamily: "'DM Mono',monospace",
               fontSize: ".5rem",
               letterSpacing: "2px",
               color: "#CC1F1F",
@@ -2463,54 +2367,50 @@ const Footer = () => (
       </div>
       <div
         style={{
-          fontFamily: "'DM Mono', monospace",
+          fontFamily: "'DM Mono',monospace",
           fontSize: ".68rem",
           color: "#333",
         }}
       >
         © 2026 <span style={{ color: "#6e6b67" }}>Kakak Dewa Sports</span> ·
-        Harga dapat berubah sewaktu-waktu · Transaksi via WhatsApp
+        Harga dapat berubah · Transaksi via WhatsApp
       </div>
     </div>
   </footer>
 );
 
-// ── APP ───────────────────────────────────────────────────────────
+// ── APP ──
 export default function App() {
   const [modal, setModal] = useState(null);
-
   const scrollTo = (label) => {
     const map = {
       "Best Seller": "best-seller",
       Katalog: "katalog",
       Lokasi: "lokasi",
     };
-    const el = document.getElementById(map[label]);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
+    document.getElementById(map[label])?.scrollIntoView({ behavior: "smooth" });
   };
-
   return (
     <div
       style={{
         background: "#080808",
         color: "#f0ede8",
         minHeight: "100vh",
-        fontFamily: "'DM Sans', sans-serif",
+        fontFamily: "'DM Sans',sans-serif",
       }}
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
-        * { margin:0; padding:0; box-sizing:border-box; }
-        html { scroll-behavior:smooth; }
-        ::-webkit-scrollbar { width:6px; }
-        ::-webkit-scrollbar-track { background:#080808; }
-        ::-webkit-scrollbar-thumb { background:#252525; border-radius:3px; }
-        body { background:#080808; }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        ::-webkit-scrollbar{width:6px}
+        ::-webkit-scrollbar-track{background:#080808}
+        ::-webkit-scrollbar-thumb{background:#252525;border-radius:3px}
+        body{background:#080808}
       `}</style>
-
       <Header onNavClick={scrollTo} />
       <Hero total={PRODUCTS.length} />
-      <Carousel onOrder={() => {}} onDetail={setModal} />
+      <Carousel onDetail={setModal} />
       <Catalog onDetail={setModal} />
       <Location />
       <Footer />
