@@ -1,0 +1,424 @@
+[
+  {
+    "brand": "PCP",
+    "name": "Predator OD 38",
+    "price": 2500000,
+    "type": "PCP",
+    "caliber": "4.5 mm (.177)",
+    "system": "±200 bar",
+    "mag": "Magazine ±10–14 peluru (tergantung tipe)",
+    "berat": "±3.0 – 3.5 kg",
+    "desc": "Senapan PCP tipe bolt action dengan sistem tabung tekanan tinggi. Cocok untuk target shooting dan penggunaan hobi, dengan performa stabil pada tekanan optimal.",
+    "images": [
+      "https://i.imgur.com/GbksW6k.png",
+      "https://i.imgur.com/kSYHdKw.png",
+      "https://i.imgur.com/Yab0JGn.png"
+    ],
+    "variantLabels": ["Merah", "Biru", "Orange"],
+    "isBestSeller": true
+  },
+
+  {
+    "brand": "Bocap",
+    "name": "Bocap Predator 500cc",
+    "price": 3200000,
+    "type": "Bocap",
+    "caliber": "5.5 mm (.22)",
+    "system": "±200–300 bar",
+    "mag": "Magazine ±10 peluru",
+    "berat": "±3.5 – 4.2 kg",
+    "desc": "Senapan Bocap dengan kapasitas tabung besar 500cc yang memungkinkan jumlah tembakan lebih banyak dalam sekali pengisian. Cocok untuk penggunaan berburu ringan dan target jarak menengah dengan tenaga lebih stabil dan daya tahan tekanan yang lebih lama.",
+    "images": [
+      "https://i.imgur.com/gX5kWjR.png",
+      "https://i.imgur.com/SA1aRsJ.png"
+    ],
+    "variantLabels": ["Merah", "Orange"],
+    "isBestSeller": true
+  },
+  {
+    "brand": "PCP",
+    "name": "Bullpup Kayu",
+    "price": 3500000,
+    "caliber": "4.5 mm",
+    "system": "±200 bar",
+    "mag": "Magazine multi-shot",
+    "berat": "±3 – 3.5 kg",
+    "desc": "Desain bullpup dengan body kayu ergonomis, memberikan handling yang compact namun tetap stabil. Cocok untuk pengguna yang ingin senapan pendek dengan performa tinggi.",
+    "images": ["https://i.imgur.com/8bbaZpD.png"],
+    "type": "PCP",
+    "variantLabels": [],
+    "isBestSeller": false
+  },
+  {
+    "brand": "PCP",
+    "name": "Bocap ZXX",
+    "price": 3000000,
+    "caliber": "4.5 – 5.5 mm",
+    "system": "±250–300 bar",
+    "mag": "Single shot",
+    "berat": "±3.5 – 4 kg",
+    "desc": "Senapan bocap dengan desain modern dan rangka tactical. Mengutamakan power besar dengan konstruksi kokoh, cocok untuk pengguna berpengalaman.",
+    "images": ["https://i.imgur.com/nZTi80m.png"],
+    "type": "Bocap",
+    "variantLabels": [],
+    "isBestSeller": false
+  },
+
+  {
+    "brand": "PCP",
+    "name": "Bocap FX Kayu",
+    "price": 3300000,
+    "caliber": "4.5 – 5.5 mm",
+    "system": "±200–300 bar",
+    "mag": "Single shot",
+    "berat": "±3 – 3.5 kg",
+    "desc": "Kombinasi desain klasik kayu dengan sistem bocap bertekanan tinggi. Memberikan keseimbangan antara estetika dan performa.",
+    "images": ["https://i.imgur.com/xxDxPIS.png"],
+    "type": "Bocap",
+    "variantLabels": [],
+    "isBestSeller": false
+  },
+
+  {
+    "brand": "PCP",
+    "name": "Marauder OD 32",
+    "price": 2800000,
+    "caliber": "4.5 mm",
+    "system": "±200 bar",
+    "mag": "Magazine multi-shot",
+    "berat": "±3 kg",
+    "desc": "Senapan PCP dengan desain klasik modern, dikenal stabil dan akurat untuk target shooting. Cocok untuk pemula hingga menengah.",
+    "images": ["https://i.imgur.com/7SbN6vD.png"],
+    "type": "PCP",
+    "variantLabels": [],
+    "isBestSeller": true
+  },
+
+  {
+    "brand": "PCP",
+    "name": "Mauser OD 28",
+    "price": 2600000,
+    "caliber": "4.5 mm",
+    "system": "±200 bar",
+    "mag": "Magazine / single shot",
+    "berat": "±3 kg",
+    "desc": "Desain klasik ala Mauser dengan finishing kayu elegan. Performa stabil dan nyaman digunakan untuk latihan maupun hobi.",
+    "images": [
+      "https://i.imgur.com/WjOF7gk.png",
+      "https://i.imgur.com/dQe3J9M.png"
+    ],
+    "type": "PCP",
+    "variantLabels": ["Merah", "Hitam"],
+    "isBestSeller": false
+  },
+
+  {
+    "brand": "PCP",
+    "name": "Airforce Black",
+    "price": 4000000,
+    "caliber": "4.5 – 5.5 mm",
+    "system": "±200–300 bar",
+    "mag": "Single shot / upgradeable",
+    "berat": "±3 – 3.5 kg",
+    "desc": "Desain tactical modern full black dengan performa tinggi. Cocok untuk pengguna yang mengutamakan power dan tampilan agresif.",
+    "images": ["https://i.imgur.com/37lKgYr.png"],
+    "type": "PCP",
+    "variantLabels": [],
+    "isBestSeller": false
+  },
+
+  {
+    "brand": "PCP",
+    "name": "PCP Jawa Monel Airgun OD 27",
+    "price": 2400000,
+    "caliber": "4.5 mm",
+    "system": "±200 bar",
+    "mag": "Single shot",
+    "berat": "±2.5 – 3 kg",
+    "desc": "Produk lokal dengan material monel yang kuat dan tahan lama. Cocok untuk penggunaan harian dengan perawatan yang mudah.",
+    "images": ["https://i.imgur.com/cFQTBw8.png"],
+    "type": "PCP",
+    "variantLabels": [],
+    "isBestSeller": true
+  },
+
+  {
+    "brand": "Spring",
+    "name": "Gejluk Master Gun",
+    "price": 1200000,
+    "caliber": "4.5 mm",
+    "system": "Spring / gejluk",
+    "mag": "Single shot",
+    "berat": "±2.5 kg",
+    "desc": "Senapan gejluk dengan sistem per sederhana, mudah digunakan dan tidak membutuhkan tabung tekanan. Cocok untuk pemula.",
+    "images": ["https://i.imgur.com/1f3R6T9.png"],
+    "type": "Gejluk",
+    "variantLabels": [],
+    "isBestSeller": false
+  },
+  {
+    "brand": "Spring",
+    "name": "Gejluk Airgun",
+    "price": 1000000,
+    "caliber": "4.5 mm",
+    "system": "Spring / gejluk",
+    "mag": "Single shot",
+    "berat": "±2 – 2.5 kg",
+    "desc": "Senapan gejluk sederhana dengan mekanisme per manual. Mudah digunakan, minim perawatan, dan cocok untuk pemula.",
+    "images": ["https://i.imgur.com/zz4Ki4v.png"],
+    "type": "Gejluk",
+    "isBestSeller": false
+  },
+
+  {
+    "brand": "PCP",
+    "name": "Predator Mini",
+    "price": 2700000,
+    "caliber": "4.5 mm",
+    "system": "±200 bar",
+    "mag": "Magazine multi-shot",
+    "berat": "±2.5 – 3 kg",
+    "desc": "Versi compact dari Predator dengan desain tactical. Ukuran lebih pendek, ringan, dan tetap memiliki performa stabil untuk target shooting.",
+    "images": ["https://i.imgur.com/RllBeTz.png"],
+    "type": "PCP",
+    "isBestSeller": false
+  },
+
+  {
+    "brand": "PCP",
+    "name": "Predator Mini Lipat",
+    "price": 2900000,
+    "caliber": "4.5 mm",
+    "system": "±200 bar",
+    "mag": "Magazine multi-shot",
+    "berat": "±2.5 – 3 kg",
+    "desc": "Varian Predator Mini dengan stock lipat, memudahkan mobilitas dan penyimpanan. Cocok untuk pengguna yang membutuhkan senapan praktis.",
+    "images": ["https://i.imgur.com/XXxwpcq.png"],
+    "type": "PCP",
+    "isBestSeller": true
+  },
+
+  {
+    "brand": "PCP",
+    "name": "PCP Redbull Pistol",
+    "price": 2200000,
+    "caliber": "4.5 mm",
+    "system": "±200 bar",
+    "mag": "Single shot / mini magazine",
+    "berat": "±1.5 – 2 kg",
+    "desc": "PCP model pistol dengan desain compact dan ringan. Cocok untuk target jarak dekat hingga menengah dengan kontrol yang mudah.",
+    "images": ["https://i.imgur.com/TBNCfSQ.png"],
+    "type": "PCP",
+    "isBestSeller": false
+  },
+
+  {
+    "brand": "Spring",
+    "name": "Gejluk Tiger",
+    "price": 1300000,
+    "caliber": "4.5 mm",
+    "system": "Spring / gejluk",
+    "mag": "Single shot",
+    "berat": "±2.5 – 3 kg",
+    "desc": "Senapan gejluk dengan desain lebih kokoh dan finishing lebih rapi. Memberikan tenaga stabil untuk penggunaan harian.",
+    "images": ["https://i.imgur.com/EeGnoJU.png"],
+    "type": "Gejluk",
+    "isBestSeller": false
+  },
+
+  {
+    "brand": "PCP",
+    "name": "PCP Sharp River",
+    "price": 2600000,
+    "caliber": "4.5 mm",
+    "system": "±200 bar",
+    "mag": "Single shot / magazine",
+    "berat": "±3 kg",
+    "desc": "Desain modern dengan finishing unik dan ergonomis. Memberikan kestabilan tembakan dan nyaman digunakan dalam waktu lama.",
+    "images": ["https://i.imgur.com/sqFRVbJ.png"],
+    "type": "PCP",
+    "isBestSeller": false
+  },
+
+  {
+    "brand": "PCP",
+    "name": "PCP Pioner",
+    "price": 2500000,
+    "caliber": "4.5 mm",
+    "system": "±200 bar",
+    "mag": "Single shot",
+    "berat": "±2.5 – 3 kg",
+    "desc": "Senapan PCP dengan desain sederhana namun fungsional. Cocok untuk pemula yang ingin masuk ke dunia PCP.",
+    "images": ["https://i.imgur.com/tm9ln7i.png"],
+    "type": "PCP",
+    "isBestSeller": false
+  },
+
+  {
+    "brand": "Spring",
+    "name": "Uklik Sharp Topten",
+    "price": 900000,
+    "caliber": "4.5 mm",
+    "system": "Spring / uklik",
+    "mag": "Single shot",
+    "berat": "±2 – 2.5 kg",
+    "desc": "Senapan uklik dengan mekanisme sederhana dan mudah digunakan. Cocok untuk latihan dasar dan penggunaan santai.",
+    "images": ["https://i.imgur.com/IrGw58K.png"],
+    "type": "Uklik",
+    "isBestSeller": false
+  },
+
+  {
+    "brand": "Spring",
+    "name": "Uklik Sharp Tiger Kayu",
+    "price": 1100000,
+    "caliber": "4.5 mm",
+    "system": "Spring / uklik",
+    "mag": "Single shot",
+    "berat": "±2.5 kg",
+    "desc": "Varian uklik dengan body kayu yang lebih elegan dan ergonomis. Memberikan kenyamanan saat digunakan.",
+    "images": ["https://i.imgur.com/SWMIhyY.png"],
+    "type": "Uklik",
+    "isBestSeller": false
+  },
+
+  {
+    "brand": "Spring",
+    "name": "Uklik Sharp Garuda",
+    "price": 1200000,
+    "caliber": "4.5 mm",
+    "system": "Spring / uklik",
+    "mag": "Single shot",
+    "berat": "±2.5 kg",
+    "desc": "Senapan uklik dengan desain modern dan kokoh. Cocok untuk penggunaan harian dengan perawatan yang mudah.",
+    "images": ["https://i.imgur.com/jClEm3T.png"],
+    "type": "Uklik",
+    "isBestSeller": false
+  },
+
+  {
+    "brand": "Spring",
+    "name": "Uklik Sharp River",
+    "price": 1150000,
+    "caliber": "4.5 mm",
+    "system": "Spring / uklik",
+    "mag": "Single shot",
+    "berat": "±2.5 kg",
+    "desc": "Varian uklik dengan desain ergonomis dan tampilan modern. Nyaman digunakan untuk target shooting harian.",
+    "images": ["https://i.imgur.com/jZsEbQi.png"],
+    "type": "Uklik",
+    "isBestSeller": false
+  },
+
+  {
+    "brand": "Spring",
+    "name": "Uklik Sharp Acee",
+    "price": 1000000,
+    "caliber": "4.5 mm",
+    "system": "Spring / uklik",
+    "mag": "Single shot",
+    "berat": "±2 – 2.5 kg",
+    "desc": "Senapan uklik basic dengan harga terjangkau. Cocok untuk pemula yang ingin belajar menembak.",
+    "images": ["https://i.imgur.com/UFvaDxN.png"],
+    "type": "Uklik",
+    "isBestSeller": false
+  },
+
+  {
+    "brand": "Spring",
+    "name": "Uklik Gajah Mada",
+    "price": 1200000,
+    "caliber": "4.5 mm",
+    "system": "Spring / uklik",
+    "mag": "Single shot",
+    "berat": "±2.5 – 3 kg",
+    "desc": "Desain kokoh dengan tenaga stabil. Cocok untuk penggunaan outdoor dan target jarak menengah.",
+    "images": ["https://i.imgur.com/TFk72dr.png"],
+    "type": "Uklik",
+    "isBestSeller": false
+  },
+
+  {
+    "brand": "Spring",
+    "name": "Uklik Sharp Inova Long",
+    "price": 1300000,
+    "caliber": "4.5 mm",
+    "system": "Spring / uklik",
+    "mag": "Single shot",
+    "berat": "±3 kg",
+    "desc": "Versi laras panjang untuk akurasi lebih baik. Cocok untuk pengguna yang mengutamakan presisi.",
+    "images": ["https://i.imgur.com/Tzvja6L.png"],
+    "type": "Uklik",
+    "isBestSeller": false
+  },
+
+  {
+    "brand": "Spring",
+    "name": "Uklik Sharp Inova",
+    "price": 1150000,
+    "caliber": "4.5 mm",
+    "system": "Spring / uklik",
+    "mag": "Single shot",
+    "berat": "±2.5 kg",
+    "desc": "Model standar dari seri Inova dengan performa seimbang antara tenaga dan kenyamanan.",
+    "images": ["https://i.imgur.com/66B48DP.png"],
+    "type": "Uklik",
+    "isBestSeller": false
+  },
+
+  {
+    "brand": "Spring",
+    "name": "Uklik Benjamin Cobra",
+    "price": 1250000,
+    "caliber": "4.5 mm",
+    "system": "Spring / uklik",
+    "mag": "Single shot",
+    "berat": "±2.5 – 3 kg",
+    "desc": "Desain klasik dengan grip yang nyaman. Cocok untuk penggunaan rutin dan latihan.",
+    "images": ["https://i.imgur.com/wWCYZwY.png"],
+    "type": "Uklik",
+    "isBestSeller": false
+  },
+
+  {
+    "brand": "Spring",
+    "name": "Uklik Benjamin Franklin",
+    "price": 1250000,
+    "caliber": "4.5 mm",
+    "system": "Spring / uklik",
+    "mag": "Single shot",
+    "berat": "±2.5 – 3 kg",
+    "desc": "Senapan uklik dengan desain klasik dan konstruksi kuat. Memberikan kestabilan saat menembak.",
+    "images": ["https://i.imgur.com/822KeMy.png"],
+    "type": "Uklik",
+    "isBestSeller": false
+  },
+
+  {
+    "brand": "Spring",
+    "name": "Uklik Sharp Hammer",
+    "price": 1350000,
+    "caliber": "4.5 mm",
+    "system": "Spring / uklik",
+    "mag": "Single shot",
+    "berat": "±3 kg",
+    "desc": "Dikenal dengan tenaga lebih kuat dibanding uklik standar. Cocok untuk pengguna yang butuh power lebih.",
+    "images": ["https://i.imgur.com/Kvm7weZ.png"],
+    "type": "Uklik",
+    "isBestSeller": false
+  },
+
+  {
+    "brand": "PCP",
+    "name": "PCP Monel Laras 70",
+    "price": 3200000,
+    "caliber": "4.5 mm",
+    "system": "±200 bar",
+    "mag": "Single shot / magazine",
+    "berat": "±3 – 3.5 kg",
+    "desc": "PCP dengan laras panjang 70 cm untuk akurasi tinggi. Cocok untuk target jarak jauh dan penggunaan serius.",
+    "images": ["https://i.imgur.com/Oqf12Fr.png"],
+    "type": "PCP",
+    "isBestSeller": false
+  }
+]

@@ -1,171 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import KakakDewaLogo from "./assets/kakakdewa-logo.png";
+import { onSnapshot, collection } from "firebase/firestore";
+import { db } from "./firebase";
+import "./App.css";
 
 const WA = "6282124377830";
 const TOKO = "Kakak Dewa Sports";
 
-const PRODUCTS = [
-  {
-    id: 100,
-    brand: "PCP",
-    name: "Predator OD 38",
-    type: "pcp",
-    price: 4200000,
-    caliber: "4.5mm",
-    sistem: "200 bar",
-    mag: "14 peluru",
-    berat: "3.1 kg",
-    badge: "hot",
-    emoji: "🔫",
-    desc: "Senapan PCP bolt action premium dengan tangki aluminium tebal dan finish kayu walnut asli. Akurasi konsisten, cocok untuk target shooting jarak menengah dan berburu.",
-    images: ["Predator-OD-38-1", "Predator-OD-38-2", "Predator-OD-38-3"],
-    variantLabels: ["Merah", "Biru", "Orange"],
-  },
-  {
-    id: 1,
-    brand: "Kral",
-    name: "Kral Puncher Breaker S",
-    type: "pcp",
-    price: 4200000,
-    caliber: "4.5mm",
-    sistem: "200 bar",
-    mag: "14 peluru",
-    berat: "3.1 kg",
-    badge: "hot",
-    emoji: "🔫",
-    desc: "Senapan PCP bolt action premium dengan tangki aluminium tebal dan finish kayu walnut asli. Akurasi konsisten, cocok untuk target shooting jarak menengah dan berburu.",
-  },
-  {
-    id: 2,
-    brand: "Hatsan",
-    name: "Hatsan BullBoss QE",
-    type: "pcp",
-    price: 5800000,
-    caliber: "5.5mm",
-    sistem: "250 bar",
-    mag: "10 peluru",
-    berat: "3.6 kg",
-    badge: "new",
-    emoji: "🎯",
-    desc: "Bullpup compact dengan suppressor QuietEnergy bawaan. Sangat senyap dan ringan saat dibawa. Ideal untuk latihan intensif di area tertutup.",
-  },
-  {
-    id: 3,
-    brand: "Sharp",
-    name: "Sharp Innova Classic",
-    type: "uklik",
-    price: 820000,
-    caliber: "4.5mm",
-    sistem: "Pompa tangan",
-    mag: "Single shot",
-    berat: "1.2 kg",
-    badge: "hot",
-    emoji: "🏹",
-    desc: "Ikon senapan uklik Indonesia. Mudah dioperasikan, perawatan simpel, suku cadang tersedia luas di seluruh nusantara. Pilihan terbaik pemula uklik.",
-  },
-  {
-    id: 4,
-    brand: "Sharp",
-    name: "Sharp Tiger Uklik Pro",
-    type: "uklik",
-    price: 680000,
-    caliber: "4.5mm",
-    sistem: "Pompa tangan",
-    mag: "Single shot",
-    berat: "1.0 kg",
-    badge: "ready",
-    emoji: "🐯",
-    desc: "Varian Tiger dari Sharp — lebih ringan dan compact. Pilihan ekonomis untuk latihan harian. Stok selalu tersedia di toko kami.",
-  },
-  {
-    id: 5,
-    brand: "Diana",
-    name: "Diana RWS 34",
-    type: "bocap",
-    price: 2100000,
-    caliber: "4.5mm",
-    sistem: "Break barrel",
-    mag: "Single shot",
-    berat: "3.1 kg",
-    badge: "new",
-    emoji: "💨",
-    images: ["5-1", "5-2", "5-3"],
-    variantLabels: ["Hitam", "Coklat Walnut", "Putih"],
-    desc: "Bocap premium buatan Jerman dengan standar kualitas tinggi. Shot-to-shot konsisten, daya tahan luar biasa untuk pemakaian bertahun-tahun.",
-  },
-  {
-    id: 6,
-    brand: "Gamo",
-    name: "Gamo Swarm Maxxim G2",
-    type: "bocap",
-    price: 3100000,
-    caliber: "4.5mm",
-    sistem: "10-shot pegas",
-    mag: "10 peluru",
-    berat: "2.8 kg",
-    badge: "",
-    emoji: "🌀",
-    desc: "Bocap revolusioner dengan Quick-Shot magazine 10 peluru. Tidak perlu pompa atau tabung — praktis dan efisien untuk latihan rutin.",
-  },
-  {
-    id: 7,
-    brand: "Gamo",
-    name: "Gamo Big Cat 1250",
-    type: "gejluk",
-    price: 1750000,
-    caliber: "4.5mm",
-    sistem: "Gas piston",
-    mag: "Single shot",
-    berat: "2.6 kg",
-    badge: "hot",
-    emoji: "🐆",
-    desc: "Senapan gejluk gas piston yang halus dan senyap. Tidak ada recoil berlebih dibanding bocap konvensional. Pilihan utama pemula gejluk.",
-  },
-  {
-    id: 8,
-    brand: "Hatsan",
-    name: "Hatsan 125 Sniper",
-    type: "gejluk",
-    price: 2400000,
-    caliber: "5.5mm",
-    sistem: "Gas piston",
-    mag: "Single shot",
-    berat: "3.9 kg",
-    badge: "hot",
-    emoji: "💪",
-    desc: "Gejluk bertenaga besar buatan Turki. Velisitas tinggi untuk berburu jarak menengah. Dilengkapi rel scope standar dan stok ergonomis.",
-  },
-  {
-    id: 9,
-    brand: "Kral",
-    name: "Kral Puncher Mega",
-    type: "pcp",
-    price: 6500000,
-    caliber: "6.35mm",
-    sistem: "200 bar",
-    mag: "7 peluru",
-    berat: "4.2 kg",
-    badge: "new",
-    emoji: "🏆",
-    desc: "PCP big bore untuk perburuan serius. Tenaga besar, stok walnut premium, pressure gauge ganda. Pilihan hunter profesional kaliber besar.",
-  },
-  {
-    id: 10,
-    brand: "Benjamin",
-    name: "Benjamin Marauder PCP",
-    type: "pcp",
-    price: 7200000,
-    caliber: "4.5mm",
-    sistem: "206 bar",
-    mag: "10 peluru",
-    berat: "3.2 kg",
-    badge: "hot",
-    emoji: "⭐",
-    desc: "Legenda PCP buatan USA. Suppressor bawaan, adjustable trigger & power. Konsistensi terbaik di kelasnya. Favorit benchrest shooter Indonesia.",
-  },
-];
-
-const BEST_SELLER_IDS = [10, 1, 3, 7, 2];
 const TYPES = [
   { key: "all", label: "Semua" },
   { key: "pcp", label: "PCP" },
@@ -184,7 +25,12 @@ const SORTS = [
 const fmt = (p) => "Rp " + p.toLocaleString("id-ID");
 const waLink = (p) => {
   const msg = encodeURIComponent(
-    `Halo ${TOKO}, saya tertarik dengan:\n\n📌 *${p.brand} ${p.name}*\n🏷️ Jenis: ${p.type.toUpperCase()}\n💰 Harga: ${fmt(p.price)}\n🎯 Kaliber: ${p.caliber}\n\nApakah stok tersedia? Terima kasih! 🙏`,
+    `Halo ${TOKO}, saya tertarik dengan:\n\n` +
+      `- *${p.brand} ${p.name}*\n` +
+      `- Jenis: ${p.type.toUpperCase()}\n` +
+      `- Harga: ${fmt(p.price)}\n` +
+      `- Kaliber: ${p.caliber}\n\n` +
+      `Apakah stok tersedia? Terima kasih!`,
   );
   return `https://wa.me/${WA}?text=${msg}`;
 };
@@ -406,7 +252,9 @@ const Badge = ({ badge }) => {
 // ── HEADER ──
 const Header = ({ onNavClick }) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [mob, setMob] = useState(window.innerWidth < 768);
+  const [mob, setMob] = useState(
+    typeof window !== "undefined" ? window.innerWidth < 768 : false,
+  );
   useEffect(() => {
     const fn = () => setMob(window.innerWidth < 768);
     window.addEventListener("resize", fn);
@@ -551,6 +399,10 @@ const Header = ({ onNavClick }) => {
                 textDecoration: "none",
                 whiteSpace: "nowrap",
               }}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.background = "#1aab52")
+              }
+              onMouseOut={(e) => (e.currentTarget.style.background = "#25D366")}
             >
               <WaIcon size={13} /> Hubungi Kami
             </a>
@@ -574,6 +426,10 @@ const Header = ({ onNavClick }) => {
                 fontWeight: 700,
                 textDecoration: "none",
               }}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.background = "#1aab52")
+              }
+              onMouseOut={(e) => (e.currentTarget.style.background = "#25D366")}
             >
               <WaIcon size={12} /> WA
             </a>
@@ -693,6 +549,8 @@ const Header = ({ onNavClick }) => {
               textDecoration: "none",
               marginTop: ".25rem",
             }}
+            onMouseOver={(e) => (e.currentTarget.style.background = "#1aab52")}
+            onMouseOut={(e) => (e.currentTarget.style.background = "#25D366")}
           >
             <WaIcon size={16} /> Hubungi via WhatsApp
           </a>
@@ -802,9 +660,9 @@ const Hero = ({ total }) => (
       <div
         style={{
           display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: ".6rem",
+          justifyContent: "center",
+          gap: "1rem",
+          flexWrap: "wrap",
           marginBottom: "2.75rem",
         }}
       >
@@ -899,15 +757,13 @@ const Hero = ({ total }) => (
 );
 
 // ── CAROUSEL ──
-const Carousel = ({ onDetail }) => {
+const Carousel = ({ products, onDetail }) => {
   const [idx, setIdx] = useState(0);
   const [dragging, setDragging] = useState(false);
   const dragStart = useRef(null);
   const timerRef = useRef(null);
 
-  const bsList = BEST_SELLER_IDS.map((id) =>
-    PRODUCTS.find((p) => p.id === id),
-  ).filter(Boolean);
+  const bsList = products.filter((p) => p.isBestSeller) || products.slice(0, 5);
   const total = bsList.length;
 
   const go = useCallback(
@@ -1045,7 +901,7 @@ const Carousel = ({ onDetail }) => {
               color: "#fff",
               fontSize: "1.4rem",
               backdropFilter: "blur(8px)",
-              transition: "background .2s",
+              transition: "background .3s",
             }}
             onMouseOver={(e) =>
               (e.currentTarget.style.background = "rgba(204,31,31,.6)")
@@ -1075,9 +931,10 @@ const Carousel = ({ onDetail }) => {
                 position: "absolute",
                 left: "50%",
                 top: "50%",
-                width: 340,
+                // width: 340,
+                width: 380,
                 height: 380,
-                marginLeft: -170,
+                marginLeft: -190,
                 marginTop: -190,
                 borderRadius: 18,
                 overflow: "hidden",
@@ -1106,16 +963,47 @@ const Carousel = ({ onDetail }) => {
                   justifyContent: "center",
                 }}
               >
-                <span
+                {/* Card background */}
+                <div
                   style={{
-                    fontSize: "7.5rem",
-                    opacity: isActive ? 0.9 : 0.7,
-                    filter: isActive ? "none" : "grayscale(30%)",
-                    transition: "all .4s",
+                    position: "absolute",
+                    inset: 0,
+                    background: `radial-gradient(ellipse at 50% 35%, ${accent}40 0%, ${bg} 65%)`,
                   }}
                 >
-                  {p.emoji}
-                </span>
+                  {p.images?.[0] ? (
+                    <img
+                      src={p.images?.[0]}
+                      alt={p.name}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        objectPosition: "center",
+                        display: "block", // ← KUNCI: hilangkan baseline gap
+                        opacity: isActive ? 1 : 0.75,
+                        filter: isActive ? "none" : "grayscale(20%)",
+                      }}
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "7.5rem",
+                        opacity: isActive ? 0.9 : 0.7,
+                      }}
+                    >
+                      {p.emoji}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Subtle grid texture overlay */}
@@ -1239,6 +1127,12 @@ const Carousel = ({ onDetail }) => {
                           fontWeight: 700,
                           fontSize: ".78rem",
                         }}
+                        onMouseOver={(e) =>
+                          (e.currentTarget.style.background = "#1aab52")
+                        }
+                        onMouseOut={(e) =>
+                          (e.currentTarget.style.background = "#25D366")
+                        }
                       >
                         <WaIcon size={13} /> Pesan
                       </a>
@@ -1288,7 +1182,6 @@ const Carousel = ({ onDetail }) => {
               background: i === idx ? "#CC1F1F" : "rgba(255,255,255,.2)",
               border: "none",
               cursor: "pointer",
-              transition: "all .3s",
               padding: 0,
             }}
           />
@@ -1330,7 +1223,7 @@ const ProductThumb = ({ p }) => {
         </>
       ) : (
         <img
-          src={`/products/${p.images ? p.images[0] : p.id}.${IMG_EXT}`}
+          src={p.images?.[0]}
           alt={p.name}
           onError={() => setErr(true)}
           style={{
@@ -1338,7 +1231,10 @@ const ProductThumb = ({ p }) => {
             height: "100%",
             objectFit: "contain",
             padding: ".5rem",
+            backgroundColor: "#f1f1f1",
           }}
+          onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+          onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
         />
       )}
     </div>
@@ -1346,18 +1242,18 @@ const ProductThumb = ({ p }) => {
 };
 
 const ModalImageSlider = ({ p }) => {
-  const slugs = p.images ? p.images : [`${p.id}`];
-  const [idx, setIdx] = useState(0);
   const [errs, setErrs] = useState({});
   useEffect(() => {
     setIdx(0);
     setErrs({});
   }, [p.id]);
+  const slugs = p.images?.length ? p.images : [];
+  const [idx, setIdx] = useState(0);
   const total = slugs.length;
-  const slug = slugs[idx];
-  const src = `/products/${slug}.${IMG_EXT}`;
 
-  const hasErr = errs[slug];
+  const src = slugs[idx];
+
+  const hasErr = errs[slugs];
   const label =
     p.variantLabels?.[idx] ?? (total > 1 ? `Varian ${idx + 1}` : null);
   return (
@@ -1382,7 +1278,7 @@ const ModalImageSlider = ({ p }) => {
           key={src}
           src={src}
           alt={`${p.name}${label ? ` — ${label}` : ""}`}
-          onError={() => setErrs((e) => ({ ...e, [slug]: true }))}
+          onError={() => setErrs((e) => ({ ...e, [slugs]: true }))}
           style={{
             width: "100%",
             height: "100%",
@@ -1526,7 +1422,6 @@ const ModalImageSlider = ({ p }) => {
                   border: "none",
                   cursor: "pointer",
                   padding: 0,
-                  transition: "all .25s",
                 }}
               />
             ))}
@@ -1548,8 +1443,7 @@ const ProductCard = ({ p, idx, onDetail }) => (
       overflow: "hidden",
       cursor: "pointer",
       position: "relative",
-      animation: `fadeUp .4s ease ${idx * 0.05}s both`,
-      transition: "all .25s",
+      animation: `fadeUp .3s ease ${idx * 0.05}s both`,
     }}
     onMouseOver={(e) => {
       e.currentTarget.style.borderColor = "#CC1F1F";
@@ -1595,7 +1489,7 @@ const ProductCard = ({ p, idx, onDetail }) => (
           marginBottom: ".65rem",
         }}
       >
-        {[p.caliber, p.type.toUpperCase()].map((t) => (
+        {[p.caliber, (p.type || "").toUpperCase()].map((t) => (
           <span
             key={t}
             style={{
@@ -1655,6 +1549,8 @@ const ProductCard = ({ p, idx, onDetail }) => (
             cursor: "pointer",
             textDecoration: "none",
           }}
+          onMouseOver={(e) => (e.currentTarget.style.background = "#1aab52")}
+          onMouseOut={(e) => (e.currentTarget.style.background = "#25D366")}
         >
           <WaIcon size={12} /> Order
         </a>
@@ -1664,26 +1560,29 @@ const ProductCard = ({ p, idx, onDetail }) => (
 );
 
 // ── CATALOG ──
-const Catalog = ({ onDetail }) => {
+const Catalog = ({ products, onDetail }) => {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("");
   const [activeType, setActiveType] = useState("all");
-  const filtered = PRODUCTS.filter((p) => {
-    const q = query.toLowerCase();
-    return (
-      (!q ||
-        [p.name, p.brand, p.type, p.caliber].some((s) =>
-          s.toLowerCase().includes(q),
-        )) &&
-      (activeType === "all" || p.type === activeType)
-    );
-  }).sort((a, b) => {
-    if (sort === "pa") return a.price - b.price;
-    if (sort === "pd") return b.price - a.price;
-    if (sort === "na") return a.name.localeCompare(b.name);
-    if (sort === "nd") return b.name.localeCompare(a.name);
-    return 0;
-  });
+  const filtered = products
+    .filter((p) => {
+      const q = query.toLowerCase();
+      return (
+        (!q ||
+          [p.name, p.brand, p.type, p.caliber]
+            .filter(Boolean)
+            .some((s) => s.toLowerCase().includes(q))) &&
+        (activeType === "all" ||
+          p.type?.toLowerCase() === activeType.toLowerCase())
+      );
+    })
+    .sort((a, b) => {
+      if (sort === "pa") return a.price - b.price;
+      if (sort === "pd") return b.price - a.price;
+      if (sort === "na") return a.name.localeCompare(b.name);
+      if (sort === "nd") return b.name.localeCompare(a.name);
+      return 0;
+    });
   return (
     <section
       style={{ maxWidth: 1400, margin: "0 auto", padding: "3rem 2rem" }}
@@ -1718,7 +1617,7 @@ const Catalog = ({ onDetail }) => {
               marginTop: ".25rem",
             }}
           >
-            Menampilkan {filtered.length} dari {PRODUCTS.length} produk
+            Menampilkan {filtered.length} dari {products.length} produk
           </div>
         </div>
       </div>
@@ -1804,7 +1703,6 @@ const Catalog = ({ onDetail }) => {
                 cursor: "pointer",
                 fontFamily: "'DM Sans',sans-serif",
                 fontWeight: activeType === t.key ? 700 : 500,
-                transition: "all .2s",
               }}
             >
               {t.label}
@@ -1839,7 +1737,12 @@ const Catalog = ({ onDetail }) => {
           }}
         >
           {filtered.map((p, i) => (
-            <ProductCard key={p.id} p={p} idx={i} onDetail={onDetail} />
+            <ProductCard
+              key={p.id || p.name}
+              p={p}
+              idx={i}
+              onDetail={onDetail}
+            />
           ))}
         </div>
       )}
@@ -1849,7 +1752,9 @@ const Catalog = ({ onDetail }) => {
 
 // ── MODAL ──
 const Modal = ({ product, onClose }) => {
-  const [mob, setMob] = useState(window.innerWidth < 768);
+  const [mob, setMob] = useState(
+    typeof window !== "undefined" ? window.innerWidth < 768 : false,
+  );
   useEffect(() => {
     const fn = () => setMob(window.innerWidth < 768);
     window.addEventListener("resize", fn);
@@ -1993,7 +1898,7 @@ const Modal = ({ product, onClose }) => {
                 color: "#CC1F1F",
               }}
             >
-              {p.type.toUpperCase()}
+              {(p.type || "").toUpperCase()}
             </span>
           </div>
           <div
@@ -2030,10 +1935,10 @@ const Modal = ({ product, onClose }) => {
           >
             {[
               ["Kaliber", p.caliber],
-              ["Sistem", p.sistem],
+              ["Sistem", p.system],
               ["Magasin", p.mag],
               ["Berat", p.berat],
-              ["Jenis", p.type.toUpperCase()],
+              ["Jenis", (p.type || "").toUpperCase()],
               ["Status", "✓ Tersedia"],
             ].map(([l, v]) => (
               <div
@@ -2287,6 +2192,9 @@ const Location = () => (
                   e.currentTarget.style.borderColor = "#CC1F1F";
                   e.currentTarget.style.color = "#CC1F1F";
                   e.currentTarget.style.background = "#CC1F1F18";
+                } else {
+                  e.currentTarget.style.borderColor = "#1aab52";
+                  e.currentTarget.style.background = "#1aab52";
                 }
               }}
               onMouseOut={(e) => {
@@ -2294,6 +2202,9 @@ const Location = () => (
                   e.currentTarget.style.borderColor = "#252525";
                   e.currentTarget.style.color = "#6e6b67";
                   e.currentTarget.style.background = "#191919";
+                } else {
+                  e.currentTarget.style.borderColor = "#25D366";
+                  e.currentTarget.style.background = "#25D366";
                 }
               }}
             >
@@ -2382,6 +2293,21 @@ const Footer = () => (
 // ── APP ──
 export default function App() {
   const [modal, setModal] = useState(null);
+  const [products, setProducts] = useState([]);
+  // const products = PRODUCTS;
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
+      const data = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setProducts(data);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const scrollTo = (label) => {
     const map = {
       "Best Seller": "best-seller",
@@ -2409,9 +2335,9 @@ export default function App() {
         body{background:#080808}
       `}</style>
       <Header onNavClick={scrollTo} />
-      <Hero total={PRODUCTS.length} />
-      <Carousel onDetail={setModal} />
-      <Catalog onDetail={setModal} />
+      <Hero total={products.length} />
+      <Carousel products={products} onDetail={setModal} />
+      <Catalog products={products} onDetail={setModal} />
       <Location />
       <Footer />
       <Modal product={modal} onClose={() => setModal(null)} />
