@@ -1281,7 +1281,7 @@ const ProductThumb = ({ p }) => {
             padding: ".5rem",
             backgroundColor: "#f1f1f1",
           }}
-          onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+          onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
           onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
         />
       )}
