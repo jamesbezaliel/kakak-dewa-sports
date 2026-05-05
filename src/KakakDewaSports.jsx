@@ -35,7 +35,30 @@ const waLink = (p) => {
   return `https://wa.me/${WA}?text=${msg}`;
 };
 
-// ── ICONS ──
+// ── SCROLL REVEAL HOOK ─────────────────────────────────────────────
+// Dipakai untuk animasi "fade up" saat elemen masuk viewport
+const useScrollReveal = (threshold = 0.12) => {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          obs.disconnect();
+        }
+      },
+      { threshold },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [threshold]);
+  return [ref, visible];
+};
+
+// ── ICONS ──────────────────────────────────────────────────────────
 const WaIcon = ({ size = 16 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a3.178 3.178 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
@@ -111,6 +134,8 @@ const SearchIcon = () => (
     <path d="m21 21-4.35-4.35" />
   </svg>
 );
+
+// ── LOGO ──────────────────────────────────────────────────────────
 const Logo = ({ size = 44 }) => {
   const [err, setErr] = useState(false);
   return err ? (
@@ -217,7 +242,7 @@ const Logo = ({ size = 44 }) => {
   );
 };
 
-// ── BADGE ──
+// ── BADGE ─────────────────────────────────────────────────────────
 const Badge = ({ badge }) => {
   if (!badge) return null;
   const map = {
@@ -249,19 +274,255 @@ const Badge = ({ badge }) => {
   );
 };
 
-// ── HEADER ──
+// ── LOADING SKELETON ───────────────────────────────────────────────
+const shimmer = `
+  @keyframes shimmer {
+    0% { background-position: -400px 0; }
+    100% { background-position: 400px 0; }
+  }
+`;
+
+const SkeletonBox = ({ w = "100%", h = 20, radius = 6, style = {} }) => (
+  <div
+    style={{
+      width: w,
+      height: h,
+      borderRadius: radius,
+      background:
+        "linear-gradient(90deg, #1c1c1c 25%, #252525 50%, #1c1c1c 75%)",
+      backgroundSize: "400px 100%",
+      animation: "shimmer 1.4s ease-in-out infinite",
+      ...style,
+    }}
+  />
+);
+
+const CardSkeleton = () => (
+  <div
+    style={{
+      background: "#111",
+      border: "1px solid #252525",
+      borderRadius: 12,
+      overflow: "hidden",
+    }}
+  >
+    <SkeletonBox h={220} radius={0} />
+    <div style={{ padding: "1rem" }}>
+      <SkeletonBox h={10} w="40%" style={{ marginBottom: 8 }} />
+      <SkeletonBox h={16} w="80%" style={{ marginBottom: 8 }} />
+      <SkeletonBox h={10} w="60%" style={{ marginBottom: 16 }} />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          borderTop: "1px solid #252525",
+          paddingTop: 12,
+        }}
+      >
+        <SkeletonBox h={22} w="45%" />
+        <SkeletonBox h={30} w="30%" radius={6} />
+      </div>
+    </div>
+  </div>
+);
+
+const CarouselSkeleton = () => (
+  <div style={{ maxWidth: 1400, margin: "0 auto", padding: "3rem 2rem 2rem" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        marginBottom: "2rem",
+      }}
+    >
+      <SkeletonBox h={28} w={160} />
+      <SkeletonBox h={22} w={120} radius={4} />
+    </div>
+    <div
+      style={{
+        position: "relative",
+        height: 420,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {/* Side cards */}
+      <div
+        style={{
+          position: "absolute",
+          left: "calc(50% - 450px)",
+          width: 280,
+          height: 320,
+          opacity: 0.45,
+          transform: "rotateY(28deg) scale(.78)",
+        }}
+      >
+        <SkeletonBox h="100%" radius={18} />
+      </div>
+      {/* Center card */}
+      <div style={{ width: 380, height: 380 }}>
+        <SkeletonBox h="100%" radius={18} />
+      </div>
+      {/* Side cards */}
+      <div
+        style={{
+          position: "absolute",
+          left: "calc(50% + 170px)",
+          width: 280,
+          height: 320,
+          opacity: 0.45,
+          transform: "rotateY(-28deg) scale(.78)",
+        }}
+      >
+        <SkeletonBox h="100%" radius={18} />
+      </div>
+    </div>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        gap: 6,
+        marginTop: 16,
+      }}
+    >
+      {[1, 2, 3, 4, 5].map((i) => (
+        <SkeletonBox key={i} h={8} w={i === 1 ? 22 : 8} radius={4} />
+      ))}
+    </div>
+  </div>
+);
+
+// ── FLOATING WA BUTTON ─────────────────────────────────────────────
+const FloatingWA = () => {
+  const [visible, setVisible] = useState(false);
+  const [hovered, setHovered] = useState(false);
+
+  useEffect(() => {
+    const fn = () => setVisible(window.scrollY > 200);
+    window.addEventListener("scroll", fn, { passive: true });
+    return () => window.removeEventListener("scroll", fn);
+  }, []);
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        bottom: 24,
+        right: 24,
+        zIndex: 600,
+        transform: visible
+          ? "scale(1) translateY(0)"
+          : "scale(0.5) translateY(20px)",
+        opacity: visible ? 1 : 0,
+        transition:
+          "transform .35s cubic-bezier(0.34,1.56,0.64,1), opacity .3s ease",
+        pointerEvents: visible ? "all" : "none",
+      }}
+    >
+      {/* Tooltip */}
+      <div
+        style={{
+          position: "absolute",
+          right: "calc(100% + 10px)",
+          top: "50%",
+          transform: "translateY(-50%)",
+          background: "#111",
+          border: "1px solid #252525",
+          borderRadius: 8,
+          padding: ".35rem .75rem",
+          whiteSpace: "nowrap",
+          fontFamily: "'DM Sans', sans-serif",
+          fontSize: ".78rem",
+          fontWeight: 600,
+          color: "#f0ede8",
+          opacity: hovered ? 1 : 0,
+          pointerEvents: "none",
+          transition: "opacity .3s",
+          boxShadow: "0 4px 20px rgba(0,0,0,.4)",
+        }}
+      >
+        Chat via WhatsApp
+        <div
+          style={{
+            position: "absolute",
+            right: -5,
+            top: "50%",
+            transform: "translateY(-50%)",
+            width: 8,
+            height: 8,
+            background: "#111",
+            border: "1px solid #252525",
+            borderRight: "none",
+            borderTop: "none",
+            rotate: "-45deg",
+          }}
+        />
+      </div>
+
+      {/* Button */}
+      <a
+        href={`https://wa.me/${WA}?text=${encodeURIComponent("Halo Kakak Dewa Sports, saya ingin bertanya.")}`}
+        target="_blank"
+        rel="noreferrer"
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={{
+          width: 56,
+          height: 56,
+          borderRadius: "50%",
+          background: "#25D366",
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          boxShadow: hovered
+            ? "0 8px 32px rgba(37,211,102,.5), 0 0 0 8px rgba(37,211,102,.15)"
+            : "0 4px 20px rgba(37,211,102,.35)",
+          transition: "box-shadow .3s, transform .3s",
+          transform: hovered ? "scale(1.1)" : "scale(1)",
+          textDecoration: "none",
+        }}
+      >
+        <WaIcon size={26} />
+      </a>
+
+      {/* Pulse ring */}
+      <div
+        style={{
+          position: "absolute",
+          inset: -4,
+          borderRadius: "50%",
+          border: "2px solid rgba(37,211,102,.4)",
+          animation: "waRing 2s ease-out infinite",
+          pointerEvents: "none",
+        }}
+      />
+    </div>
+  );
+};
+
+// ── HEADER ────────────────────────────────────────────────────────
 const Header = ({ onNavClick }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mob, setMob] = useState(
     typeof window !== "undefined" ? window.innerWidth < 768 : false,
   );
   const [menuClosing, setMenuClosing] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const fn = () => setMob(window.innerWidth < 768);
-    window.addEventListener("resize", fn);
-    return () => window.removeEventListener("resize", fn);
+    const onResize = () => setMob(window.innerWidth < 768);
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("resize", onResize);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
+
   const nav = (l) => {
     setMenuOpen(false);
     onNavClick(l);
@@ -278,6 +539,7 @@ const Header = ({ onNavClick }) => {
       title: "Facebook",
     },
   ];
+
   return (
     <>
       <header
@@ -330,6 +592,7 @@ const Header = ({ onNavClick }) => {
             </div>
           </div>
         </a>
+
         {!mob && (
           <nav
             style={{ display: "flex", alignItems: "center", gap: "1.25rem" }}
@@ -346,6 +609,7 @@ const Header = ({ onNavClick }) => {
                   fontWeight: 500,
                   cursor: "pointer",
                   fontFamily: "'DM Sans',sans-serif",
+                  transition: "color .3s",
                 }}
                 onMouseOver={(e) => (e.target.style.color = "#f0ede8")}
                 onMouseOut={(e) => (e.target.style.color = "#6e6b67")}
@@ -371,6 +635,7 @@ const Header = ({ onNavClick }) => {
                   color: "#6e6b67",
                   textDecoration: "none",
                   background: "#111",
+                  transition: "all .3s",
                 }}
                 onMouseOver={(e) => {
                   e.currentTarget.style.borderColor = "#CC1F1F";
@@ -400,6 +665,7 @@ const Header = ({ onNavClick }) => {
                 fontWeight: 700,
                 textDecoration: "none",
                 whiteSpace: "nowrap",
+                transition: "background .3s",
               }}
               onMouseOver={(e) =>
                 (e.currentTarget.style.background = "#1aab52")
@@ -430,7 +696,7 @@ const Header = ({ onNavClick }) => {
                 fontWeight: 700,
                 textDecoration: "none",
                 whiteSpace: "nowrap",
-                transition: "all .2s",
+                transition: "all .3s",
               }}
               onMouseOver={(e) => {
                 e.currentTarget.style.background = "#1aab52";
@@ -608,210 +874,229 @@ const Header = ({ onNavClick }) => {
   );
 };
 
-// ── HERO ──
-const Hero = ({ total }) => (
-  <section
-    style={{
-      position: "relative",
-      textAlign: "center",
-      padding: "4.5rem 2rem 3.5rem",
-      overflow: "hidden",
-    }}
-  >
-    <div
+// ── HERO ──────────────────────────────────────────────────────────
+const Hero = ({ total }) => {
+  const [ref, visible] = useScrollReveal(0.05);
+  return (
+    <section
+      ref={ref}
       style={{
-        position: "absolute",
-        top: 0,
-        left: "50%",
-        transform: "translateX(-50%)",
-        width: 900,
-        height: 450,
-        pointerEvents: "none",
-        background:
-          "radial-gradient(ellipse 65% 55% at 50% 0%, rgba(204,31,31,.16) 0%, transparent 70%)",
+        position: "relative",
+        textAlign: "center",
+        padding: "4.5rem 2rem 3.5rem",
+        overflow: "hidden",
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(24px)",
+        transition: "opacity .7s ease, transform .7s ease",
       }}
-    />
-    <div style={{ position: "relative", zIndex: 1 }}>
+    >
       <div
         style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: ".5rem",
-          fontFamily: "'DM Mono',monospace",
-          fontSize: ".65rem",
-          letterSpacing: "2.5px",
-          color: "#CC1F1F",
-          background: "rgba(204,31,31,.1)",
-          border: "1px solid rgba(204,31,31,.28)",
-          padding: ".28rem .85rem",
-          borderRadius: 2,
-          textTransform: "uppercase",
-          marginBottom: "1.5rem",
+          position: "absolute",
+          top: 0,
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: 900,
+          height: 450,
+          pointerEvents: "none",
+          background:
+            "radial-gradient(ellipse 65% 55% at 50% 0%, rgba(204,31,31,.16) 0%, transparent 70%)",
         }}
-      >
-        ⚙ Senapan Angin Terpercaya Indonesia
-      </div>
-      <div
-        style={{
-          fontSize: "7rem",
-          lineHeight: 1,
-          display: "block",
-          marginBottom: "1rem",
-          filter: "drop-shadow(0 0 24px rgba(204,31,31,.4))",
-          animation: "float 4.5s ease-in-out infinite",
-        }}
-      >
-        <img
-          src={KakakDewaLogo}
-          alt="Kakak Dewa Sports"
+      />
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <div
           style={{
-            width: "clamp(15rem,37.5vw,22rem)",
-            objectFit: "contain",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: ".5rem",
+            fontFamily: "'DM Mono',monospace",
+            fontSize: ".65rem",
+            letterSpacing: "2.5px",
+            color: "#CC1F1F",
+            background: "rgba(204,31,31,.1)",
+            border: "1px solid rgba(204,31,31,.28)",
+            padding: ".28rem .85rem",
+            borderRadius: 2,
+            textTransform: "uppercase",
+            marginBottom: "1.5rem",
+          }}
+        >
+          ⚙ Senapan Angin Terpercaya Indonesia
+        </div>
+        <div
+          style={{
+            fontSize: "7rem",
+            lineHeight: 1,
             display: "block",
-            margin: "0 auto",
+            marginBottom: "1rem",
+            filter: "drop-shadow(0 0 24px rgba(204,31,31,.4))",
+            animation: "float 4.5s ease-in-out infinite",
           }}
-          onError={(e) => {
-            e.currentTarget.style.display = "none";
-            e.currentTarget.nextSibling.style.display = "block";
-          }}
-        />
-        <span style={{ display: "none", fontSize: "7rem", lineHeight: 1 }}>
-          🏹
-        </span>
-      </div>
-      <h1
-        style={{
-          fontFamily: "'Bebas Neue',sans-serif",
-          letterSpacing: "4px",
-          lineHeight: 0.93,
-          fontSize: "clamp(3rem,7.5vw,6.5rem)",
-          marginBottom: "1rem",
-        }}
-      >
-        KAKAK DEWA
-        <br />
-        <span style={{ color: "#CC1F1F" }}>SPORTS</span>
-      </h1>
-      <p
-        style={{
-          color: "#6e6b67",
-          fontSize: ".93rem",
-          lineHeight: 1.75,
-          maxWidth: 460,
-          margin: "0 auto 2.25rem",
-        }}
-      >
-        Toko senapan angin terlengkap & terpercaya di Lubuklinggau.
-        <br />
-        PCP, Uklik, Bocap, Gejluk — harga terbaik, gratis ongkir.
-      </p>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          gap: "1rem",
-          flexWrap: "wrap",
-          marginBottom: "2.75rem",
-        }}
-      >
-        {[
-          { ico: "🏆", label: "Toko Senapan Terpercaya", a: "#CC1F1F" },
-          { ico: "💰", label: "Garansi Harga Termurah", a: "#c8a84b" },
-          { ico: "🚚", label: "Gratis Ongkir se-Indonesia", a: "#2ecc71" },
-        ].map(({ ico, label, a }) => (
-          <div
-            key={label}
+        >
+          <img
+            src={KakakDewaLogo}
+            alt="Kakak Dewa Sports"
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: ".55rem",
-              background: "#111",
-              border: "1px solid #252525",
-              borderRadius: 30,
-              padding: ".45rem 1.25rem",
-              fontSize: ".79rem",
-              fontWeight: 600,
+              width: "clamp(15rem,37.5vw,22rem)",
+              objectFit: "contain",
+              display: "block",
+              margin: "0 auto",
             }}
-          >
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+              e.currentTarget.nextSibling.style.display = "block";
+            }}
+          />
+          <span style={{ display: "none", fontSize: "7rem", lineHeight: 1 }}>
+            🏹
+          </span>
+        </div>
+        <h1
+          style={{
+            fontFamily: "'Bebas Neue',sans-serif",
+            letterSpacing: "4px",
+            lineHeight: 0.93,
+            fontSize: "clamp(3rem,7.5vw,6.5rem)",
+            marginBottom: "1rem",
+          }}
+        >
+          KAKAK DEWA
+          <br />
+          <span style={{ color: "#CC1F1F" }}>SPORTS</span>
+        </h1>
+        <p
+          style={{
+            color: "#6e6b67",
+            fontSize: ".93rem",
+            lineHeight: 1.75,
+            maxWidth: 460,
+            margin: "0 auto 2.25rem",
+          }}
+        >
+          Toko senapan angin terlengkap & terpercaya di Lubuklinggau.
+          <br />
+          PCP, Uklik, Bocap, Gejluk — harga terbaik, gratis ongkir.
+        </p>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "1rem",
+            flexWrap: "wrap",
+            marginBottom: "2.75rem",
+          }}
+        >
+          {[
+            { ico: "🏆", label: "Toko Senapan Terpercaya", a: "#CC1F1F" },
+            { ico: "💰", label: "Garansi Harga Termurah", a: "#c8a84b" },
+            { ico: "🚚", label: "Gratis Ongkir se-Indonesia", a: "#2ecc71" },
+          ].map(({ ico, label, a }) => (
             <div
+              key={label}
               style={{
-                width: 26,
-                height: 26,
-                borderRadius: "50%",
-                background: `${a}18`,
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                fontSize: ".85rem",
+                gap: ".55rem",
+                background: "#111",
+                border: "1px solid #252525",
+                borderRadius: 30,
+                padding: ".45rem 1.25rem",
+                fontSize: ".79rem",
+                fontWeight: 600,
               }}
             >
-              {ico}
+              <div
+                style={{
+                  width: 26,
+                  height: 26,
+                  borderRadius: "50%",
+                  background: `${a}18`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: ".85rem",
+                }}
+              >
+                {ico}
+              </div>
+              {label}
             </div>
-            {label}
-          </div>
-        ))}
-      </div>
-      <div
-        style={{
-          display: "inline-flex",
-          border: "1px solid #252525",
-          borderRadius: 12,
-          overflow: "hidden",
-          background: "#111",
-          maxWidth: "100%",
-        }}
-      >
-        {[
-          { num: `${total}+`, lbl: "Produk" },
-          { num: "4", lbl: "Jenis" },
-          { num: "100%", lbl: "Amanah" },
-          { num: "FREE", lbl: "Ongkir" },
-        ].map(({ num, lbl }, i) => (
-          <div
-            key={lbl}
-            style={{
-              padding: "1rem clamp(.75rem,3vw,2rem)",
-              textAlign: "center",
-              borderRight: i < 3 ? "1px solid #252525" : "none",
-            }}
-          >
-            <span
+          ))}
+        </div>
+        {/* Stats - grid agar tidak overflow di mobile */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(4,1fr)",
+            border: "1px solid #252525",
+            borderRadius: 12,
+            overflow: "hidden",
+            background: "#111",
+            maxWidth: 480,
+            margin: "0 auto",
+          }}
+        >
+          {[
+            { num: `${total}+`, lbl: "Produk" },
+            { num: "4", lbl: "Jenis" },
+            { num: "100%", lbl: "Amanah" },
+            { num: "FREE", lbl: "Ongkir" },
+          ].map(({ num, lbl }, i) => (
+            <div
+              key={lbl}
               style={{
-                fontFamily: "'Bebas Neue',sans-serif",
-                fontSize: "clamp(1.4rem,4vw,1.9rem)",
-                color: "#CC1F1F",
-                letterSpacing: "2px",
-                display: "block",
+                padding: "1rem .5rem",
+                textAlign: "center",
+                borderRight: i < 3 ? "1px solid #252525" : "none",
               }}
             >
-              {num}
-            </span>
-            <span
-              style={{
-                fontSize: "clamp(.55rem,2vw,.65rem)",
-                color: "#6e6b67",
-                textTransform: "uppercase",
-                letterSpacing: "1px",
-              }}
-            >
-              {lbl}
-            </span>
-          </div>
-        ))}
+              <span
+                style={{
+                  fontFamily: "'Bebas Neue',sans-serif",
+                  fontSize: "clamp(1.2rem,4vw,1.9rem)",
+                  color: "#CC1F1F",
+                  letterSpacing: "2px",
+                  display: "block",
+                }}
+              >
+                {num}
+              </span>
+              <span
+                style={{
+                  fontSize: "clamp(.48rem,1.8vw,.65rem)",
+                  color: "#6e6b67",
+                  textTransform: "uppercase",
+                  letterSpacing: "1px",
+                }}
+              >
+                {lbl}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
-    <style>{`@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}`}</style>
-  </section>
-);
+      <style>{`
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+        @keyframes waRing{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.8);opacity:0}}
+        @keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+      `}</style>
+    </section>
+  );
+};
 
-// ── CAROUSEL ──
+// ── CAROUSEL ──────────────────────────────────────────────────────
 const Carousel = ({ products, onDetail }) => {
   const [idx, setIdx] = useState(0);
   const [dragging, setDragging] = useState(false);
   const dragStart = useRef(null);
   const timerRef = useRef(null);
+  const [ref, visible] = useScrollReveal(0.1);
 
-  const bsList = products.filter((p) => p.isBestSeller) || products.slice(0, 5);
+  const bsList =
+    products.filter((p) => p.isBestSeller).length > 0
+      ? products.filter((p) => p.isBestSeller)
+      : products.slice(0, 5);
   const total = bsList.length;
 
   const go = useCallback(
@@ -828,6 +1113,7 @@ const Carousel = ({ products, onDetail }) => {
   );
 
   useEffect(() => {
+    if (total === 0) return;
     timerRef.current = setInterval(() => setIdx((x) => (x + 1) % total), 5000);
     return () => clearInterval(timerRef.current);
   }, [total]);
@@ -845,7 +1131,6 @@ const Carousel = ({ products, onDetail }) => {
     dragStart.current = null;
   };
 
-  // posisi per offset dari tengah
   const CFG = {
     0: { x: 0, scale: 1, ry: 0, z: 100, op: 1, blur: 0 },
     1: { x: 290, scale: 0.78, ry: -28, z: 50, op: 0.82, blur: 1 },
@@ -854,7 +1139,6 @@ const Carousel = ({ products, onDetail }) => {
     "-2": { x: -490, scale: 0.58, ry: 42, z: 10, op: 0.48, blur: 2.5 },
   };
 
-  // warna unik per card buat bg (karena di artifact tidak ada foto produk)
   const CARD_COLORS = [
     ["#1a0505", "#CC1F1F"],
     ["#051a0a", "#1a8c3a"],
@@ -863,13 +1147,20 @@ const Carousel = ({ products, onDetail }) => {
     ["#15051a", "#7c1a8c"],
   ];
 
+  // Show skeleton while loading
+  if (products.length === 0) return <CarouselSkeleton />;
+
   return (
     <div
+      ref={ref}
       style={{
         maxWidth: 1400,
         margin: "0 auto",
         padding: "3rem 2rem 2rem",
         scrollMarginTop: 40,
+        // opacity: visible ? 1 : 0,
+        // transform: visible ? "translateY(0)" : "translateY(32px)",
+        transition: "opacity .7s ease .1s, transform .7s ease .1s",
       }}
       id="best-seller"
     >
@@ -923,7 +1214,6 @@ const Carousel = ({ products, onDetail }) => {
           marginBottom: "2rem",
         }}
       >
-        {/* Arrow buttons */}
         {[
           { dir: -1, side: "left", label: "‹" },
           { dir: 1, side: "right", label: "›" },
@@ -962,7 +1252,6 @@ const Carousel = ({ products, onDetail }) => {
           </button>
         ))}
 
-        {/* Cards */}
         {bsList.map((p, i) => {
           const raw = (((i - idx + total) % total) + total) % total;
           const norm = raw > total / 2 ? raw - total : raw;
@@ -979,7 +1268,6 @@ const Carousel = ({ products, onDetail }) => {
                 position: "absolute",
                 left: "50%",
                 top: "50%",
-                // width: 340,
                 width: 380,
                 height: 380,
                 marginLeft: -190,
@@ -1000,61 +1288,51 @@ const Carousel = ({ products, onDetail }) => {
                   : "0 16px 40px rgba(0,0,0,.45)",
               }}
             >
-              {/* Card background dengan warna unik + emoji besar */}
+              {/* Background: foto atau gradient+emoji */}
               <div
                 style={{
                   position: "absolute",
                   inset: 0,
                   background: `radial-gradient(ellipse at 50% 35%, ${accent}40 0%, ${bg} 65%)`,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
                 }}
               >
-                {/* Card background */}
+                {p.images?.[0] ? (
+                  <img
+                    src={p.images[0]}
+                    alt={p.name}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      objectPosition: "center",
+                      display: "block",
+                      opacity: isActive ? 1 : 0.75,
+                      filter: isActive ? "none" : "grayscale(20%)",
+                      transition: "opacity .4s, filter .4s",
+                    }}
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      e.currentTarget.nextSibling.style.display = "flex";
+                    }}
+                  />
+                ) : null}
                 <div
                   style={{
-                    position: "absolute",
-                    inset: 0,
-                    background: `radial-gradient(ellipse at 50% 35%, ${accent}40 0%, ${bg} 65%)`,
+                    display: p.images?.[0] ? "none" : "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "100%",
+                    height: "100%",
+                    fontSize: "7.5rem",
+                    opacity: isActive ? 0.9 : 0.7,
+                    transition: "opacity .4s",
                   }}
                 >
-                  {p.images?.[0] ? (
-                    <img
-                      src={p.images?.[0]}
-                      alt={p.name}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        objectPosition: "center",
-                        display: "block", // ← KUNCI: hilangkan baseline gap
-                        opacity: isActive ? 1 : 0.75,
-                        filter: isActive ? "none" : "grayscale(20%)",
-                      }}
-                      onError={(e) => {
-                        e.currentTarget.style.display = "none";
-                      }}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "7.5rem",
-                        opacity: isActive ? 0.9 : 0.7,
-                      }}
-                    >
-                      {p.emoji}
-                    </div>
-                  )}
+                  {p.emoji}
                 </div>
               </div>
 
-              {/* Subtle grid texture overlay */}
+              {/* Grid texture */}
               <div
                 style={{
                   position: "absolute",
@@ -1077,7 +1355,7 @@ const Carousel = ({ products, onDetail }) => {
                 />
               )}
 
-              {/* Bottom gradient + text */}
+              {/* Text overlay */}
               <div
                 style={{
                   position: "absolute",
@@ -1174,6 +1452,7 @@ const Carousel = ({ products, onDetail }) => {
                           borderRadius: 8,
                           fontWeight: 700,
                           fontSize: ".78rem",
+                          transition: "background .3s",
                         }}
                         onMouseOver={(e) =>
                           (e.currentTarget.style.background = "#1aab52")
@@ -1199,8 +1478,6 @@ const Carousel = ({ products, onDetail }) => {
                   </div>
                 )}
               </div>
-
-              {/* Active border ring */}
               {isActive && (
                 <div
                   style={{
@@ -1230,6 +1507,7 @@ const Carousel = ({ products, onDetail }) => {
               background: i === idx ? "#CC1F1F" : "rgba(255,255,255,.2)",
               border: "none",
               cursor: "pointer",
+              transition: "all .3s",
               padding: 0,
             }}
           />
@@ -1239,16 +1517,18 @@ const Carousel = ({ products, onDetail }) => {
   );
 };
 
-// ── PRODUCT IMAGES ──
+// ── PRODUCT IMAGES ────────────────────────────────────────────────
 const IMG_EXT = "png";
 const ProductThumb = ({ p }) => {
   const [err, setErr] = useState(false);
+  const src = p.images?.[0];
   return (
     <div
       style={{
         width: "100%",
         aspectRatio: "1/1",
-        background: err ? "linear-gradient(135deg,#191919,#111)" : "#f8f8f8",
+        background:
+          err || !src ? "linear-gradient(135deg,#191919,#111)" : "#f8f8f8",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -1257,7 +1537,7 @@ const ProductThumb = ({ p }) => {
         overflow: "hidden",
       }}
     >
-      {err ? (
+      {err || !src ? (
         <>
           <div
             style={{
@@ -1271,7 +1551,7 @@ const ProductThumb = ({ p }) => {
         </>
       ) : (
         <img
-          src={p.images?.[0]}
+          src={src}
           alt={p.name}
           onError={() => setErr(true)}
           style={{
@@ -1280,8 +1560,9 @@ const ProductThumb = ({ p }) => {
             objectFit: "contain",
             padding: ".5rem",
             backgroundColor: "#f1f1f1",
+            transition: "transform .3s ease",
           }}
-          onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
+          onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.06)")}
           onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
         />
       )}
@@ -1289,25 +1570,25 @@ const ProductThumb = ({ p }) => {
   );
 };
 
+// ── BUGFIX: ModalImageSlider — useState harus sebelum semua hook/logic ──
 const ModalImageSlider = ({ p }) => {
+  const [idx, setIdx] = useState(0); // ← FIXED: useState dulu sebelum logic
   const [errs, setErrs] = useState({});
-  const [idx, setIdx] = useState(0);
   const slugs = p.images?.length ? p.images : [];
   const total = slugs.length;
+  const src = slugs[idx];
+  const hasErr = errs[src];
+  const label =
+    p.variantLabels?.[idx] ?? (total > 1 ? `Varian ${idx + 1}` : null);
 
   useEffect(() => {
     setIdx(0);
     setErrs({});
-  }, [p.id]);
+  }, [p.id]); // ← FIXED: useEffect setelah useState
 
-  const src = slugs[idx];
-
-  const hasErr = errs[slugs];
-  const label =
-    p.variantLabels?.[idx] ?? (total > 1 ? `Varian ${idx + 1}` : null);
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
-      {hasErr ? (
+      {hasErr || !src ? (
         <div
           style={{
             width: "100%",
@@ -1327,7 +1608,7 @@ const ModalImageSlider = ({ p }) => {
           key={src}
           src={src}
           alt={`${p.name}${label ? ` — ${label}` : ""}`}
-          onError={() => setErrs((e) => ({ ...e, [slugs]: true }))}
+          onError={() => setErrs((e) => ({ ...e, [src]: true }))}
           style={{
             width: "100%",
             height: "100%",
@@ -1337,69 +1618,56 @@ const ModalImageSlider = ({ p }) => {
             display: "block",
             padding: "1rem",
             backgroundColor: "#f1f1f1",
+            transition: "opacity .3s",
           }}
         />
       )}
       {total > 1 && (
         <>
-          <button
-            onClick={() => setIdx((i) => (i - 1 + total) % total)}
-            style={{
-              position: "absolute",
-              left: 12,
-              top: "50%",
-              transform: "translateY(-50%)",
-              zIndex: 10,
-              background: "rgba(0,0,0,.55)",
-              border: "1px solid rgba(255,255,255,.12)",
-              borderRadius: "50%",
-              width: 38,
-              height: 38,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              color: "#fff",
-              fontSize: "1.1rem",
-            }}
-            onMouseOver={(e) =>
-              (e.currentTarget.style.background = "rgba(204,31,31,.75)")
-            }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.background = "rgba(0,0,0,.55)")
-            }
-          >
-            ‹
-          </button>
-          <button
-            onClick={() => setIdx((i) => (i + 1) % total)}
-            style={{
-              position: "absolute",
-              right: 12,
-              top: "50%",
-              transform: "translateY(-50%)",
-              zIndex: 10,
-              background: "rgba(0,0,0,.55)",
-              border: "1px solid rgba(255,255,255,.12)",
-              borderRadius: "50%",
-              width: 38,
-              height: 38,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              color: "#fff",
-              fontSize: "1.1rem",
-            }}
-            onMouseOver={(e) =>
-              (e.currentTarget.style.background = "rgba(204,31,31,.75)")
-            }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.background = "rgba(0,0,0,.55)")
-            }
-          >
-            ›
-          </button>
+          {[
+            {
+              fn: () => setIdx((i) => (i - 1 + total) % total),
+              side: "left",
+              label: "‹",
+            },
+            {
+              fn: () => setIdx((i) => (i + 1) % total),
+              side: "right",
+              label: "›",
+            },
+          ].map(({ fn, side, label }) => (
+            <button
+              key={side}
+              onClick={fn}
+              style={{
+                position: "absolute",
+                [side]: 12,
+                top: "50%",
+                transform: "translateY(-50%)",
+                zIndex: 10,
+                background: "rgba(0,0,0,.55)",
+                border: "1px solid rgba(255,255,255,.12)",
+                borderRadius: "50%",
+                width: 38,
+                height: 38,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                color: "#fff",
+                fontSize: "1.1rem",
+                transition: "background .3s",
+              }}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.background = "rgba(204,31,31,.75)")
+              }
+              onMouseOut={(e) =>
+                (e.currentTarget.style.background = "rgba(0,0,0,.55)")
+              }
+            >
+              {label}
+            </button>
+          ))}
           <div
             style={{
               position: "absolute",
@@ -1471,6 +1739,7 @@ const ModalImageSlider = ({ p }) => {
                   border: "none",
                   cursor: "pointer",
                   padding: 0,
+                  transition: "all .25s",
                 }}
               />
             ))}
@@ -1481,138 +1750,175 @@ const ModalImageSlider = ({ p }) => {
   );
 };
 
-// ── PRODUCT CARD ──
-const ProductCard = ({ p, idx, onDetail }) => (
-  <div
-    onClick={() => onDetail(p)}
-    style={{
-      background: "#111",
-      border: "1px solid #252525",
-      borderRadius: 12,
-      overflow: "hidden",
-      cursor: "pointer",
-      position: "relative",
-      animation: `fadeUp .3s ease ${idx * 0.05}s both`,
-    }}
-    onMouseOver={(e) => {
-      e.currentTarget.style.borderColor = "#CC1F1F";
-      e.currentTarget.style.transform = "translateY(-4px)";
-      e.currentTarget.style.boxShadow = "0 16px 48px rgba(204,31,31,.12)";
-    }}
-    onMouseOut={(e) => {
-      e.currentTarget.style.borderColor = "#252525";
-      e.currentTarget.style.transform = "translateY(0)";
-      e.currentTarget.style.boxShadow = "none";
-    }}
-  >
-    <Badge badge={p.badge} />
-    <ProductThumb p={p} />
-    <div style={{ padding: ".95rem 1.05rem 1.05rem" }}>
-      <div
-        style={{
-          fontFamily: "'DM Mono',monospace",
-          fontSize: ".6rem",
-          color: "#CC1F1F",
-          letterSpacing: "2px",
-          textTransform: "uppercase",
-          marginBottom: ".22rem",
-        }}
-      >
-        {p.brand}
-      </div>
-      <div
-        style={{
-          fontSize: ".9rem",
-          fontWeight: 600,
-          lineHeight: 1.3,
-          marginBottom: ".55rem",
-        }}
-      >
-        {p.name}
-      </div>
-      <div
-        style={{
-          display: "flex",
-          gap: ".38rem",
-          flexWrap: "wrap",
-          marginBottom: ".65rem",
-        }}
-      >
-        {[p.caliber, (p.type || "").toUpperCase()].map((t) => (
-          <span
-            key={t}
-            style={{
-              fontSize: ".63rem",
-              padding: ".16rem .42rem",
-              background: "#191919",
-              border: "1px solid #252525",
-              borderRadius: 4,
-              color: "#6e6b67",
-              fontFamily: "'DM Mono',monospace",
-            }}
-          >
-            {t}
-          </span>
-        ))}
-      </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          borderTop: "1px solid #252525",
-          paddingTop: ".7rem",
-        }}
-      >
-        <div>
-          <div
-            style={{
-              fontFamily: "'Bebas Neue',sans-serif",
-              fontSize: "1.25rem",
-              letterSpacing: "1px",
-              color: "#CC1F1F",
-            }}
-          >
-            {fmt(p.price)}
-          </div>
-          <div style={{ fontSize: ".6rem", color: "#6e6b67", marginTop: -2 }}>
-            Harga satuan
-          </div>
+// ── PRODUCT CARD ──────────────────────────────────────────────────
+const ProductCard = ({ p, idx, onDetail }) => {
+  const [ref, visible] = useScrollReveal(0.08);
+  return (
+    <div
+      ref={ref}
+      onClick={() => onDetail(p)}
+      style={{
+        background: "#111",
+        border: "1px solid #252525",
+        borderRadius: 12,
+        overflow: "hidden",
+        cursor: "pointer",
+        position: "relative",
+        // jangan dihapus
+        // opacity: visible ? 1 : 0,
+        // transform: visible ? "translateY(0)" : "translateY(20px)",
+        transition: `opacity .5s ease ${idx * 0.06}s, transform .5s ease ${idx * 0.06}s, border-color .3s, box-shadow .3s`,
+      }}
+      onMouseOver={(e) => {
+        e.currentTarget.style.borderColor = "#CC1F1F";
+        e.currentTarget.style.boxShadow = "0 16px 48px rgba(204, 31, 31, 0.23)";
+      }}
+      onMouseOut={(e) => {
+        e.currentTarget.style.borderColor = "#252525";
+        e.currentTarget.style.boxShadow = "none";
+      }}
+    >
+      <Badge badge={p.badge} />
+      <ProductThumb p={p} />
+      <div style={{ padding: ".95rem 1.05rem 1.05rem" }}>
+        <div
+          style={{
+            fontFamily: "'DM Mono',monospace",
+            fontSize: ".6rem",
+            color: "#CC1F1F",
+            letterSpacing: "2px",
+            textTransform: "uppercase",
+            marginBottom: ".22rem",
+          }}
+        >
+          {p.brand}
         </div>
-        <a
-          href={waLink(p)}
-          target="_blank"
-          rel="noreferrer"
-          onClick={(e) => e.stopPropagation()}
+        <div
+          style={{
+            fontSize: ".9rem",
+            fontWeight: 600,
+            lineHeight: 1.3,
+            marginBottom: ".55rem",
+          }}
+        >
+          {p.name}
+        </div>
+        <div
           style={{
             display: "flex",
-            alignItems: "center",
-            gap: ".3rem",
-            background: "#25D366",
-            color: "#fff",
-            border: "none",
-            borderRadius: 6,
-            padding: ".38rem .62rem",
-            fontSize: ".7rem",
-            fontWeight: 700,
-            cursor: "pointer",
-            textDecoration: "none",
+            gap: ".38rem",
+            flexWrap: "wrap",
+            marginBottom: ".65rem",
           }}
-          onMouseOver={(e) => (e.currentTarget.style.background = "#1aab52")}
-          onMouseOut={(e) => (e.currentTarget.style.background = "#25D366")}
         >
-          <WaIcon size={12} /> Order
-        </a>
+          {[p.caliber, (p.type || "").toUpperCase()].map((t) => (
+            <span
+              key={t}
+              style={{
+                fontSize: ".63rem",
+                padding: ".16rem .42rem",
+                background: "#191919",
+                border: "1px solid #252525",
+                borderRadius: 4,
+                color: "#6e6b67",
+                fontFamily: "'DM Mono',monospace",
+              }}
+            >
+              {t}
+            </span>
+          ))}
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            borderTop: "1px solid #252525",
+            paddingTop: ".7rem",
+          }}
+        >
+          <div>
+            <div
+              style={{
+                fontFamily: "'Bebas Neue',sans-serif",
+                fontSize: "1.25rem",
+                letterSpacing: "1px",
+                color: "#CC1F1F",
+              }}
+            >
+              {fmt(p.price)}
+            </div>
+            <div style={{ fontSize: ".6rem", color: "#6e6b67", marginTop: -2 }}>
+              Harga satuan
+            </div>
+          </div>
+          <a
+            href={waLink(p)}
+            target="_blank"
+            rel="noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: ".3rem",
+              background: "#25D366",
+              color: "#fff",
+              border: "none",
+              borderRadius: 6,
+              padding: ".38rem .62rem",
+              fontSize: ".7rem",
+              fontWeight: 700,
+              cursor: "pointer",
+              textDecoration: "none",
+              transition: "background .3s",
+            }}
+            onMouseOver={(e) => (e.currentTarget.style.background = "#1aab52")}
+            onMouseOut={(e) => (e.currentTarget.style.background = "#25D366")}
+          >
+            <WaIcon size={12} /> Order
+          </a>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
-// ── CATALOG ──
+// ── SEARCH HIGHLIGHT ──────────────────────────────────────────────
+const Highlight = ({ text = "", query = "" }) => {
+  if (!query.trim()) return <>{text}</>;
+  const parts = text.split(
+    new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi"),
+  );
+  return (
+    <>
+      {parts.map((part, i) =>
+        part.toLowerCase() === query.toLowerCase() ? (
+          <mark
+            key={i}
+            style={{
+              background: "rgba(204,31,31,.3)",
+              color: "#f0ede8",
+              borderRadius: 2,
+              padding: "0 1px",
+            }}
+          >
+            {part}
+          </mark>
+        ) : (
+          part
+        ),
+      )}
+    </>
+  );
+};
+
+// ── CATALOG ───────────────────────────────────────────────────────
 const Catalog = ({ products, onDetail }) => {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("");
   const [activeType, setActiveType] = useState("all");
+  const [ref, visible] = useScrollReveal(0.05);
+
   const filtered = products
     .filter((p) => {
       const q = query.toLowerCase();
@@ -1632,16 +1938,22 @@ const Catalog = ({ products, onDetail }) => {
       if (sort === "nd") return b.name.localeCompare(a.name);
       return 0;
     });
+
   return (
     <section
+      ref={ref}
       style={{
         maxWidth: 1400,
         margin: "0 auto",
         padding: "3rem 2rem",
         scrollMarginTop: 40,
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(32px)",
+        transition: "opacity .7s ease .15s, transform .7s ease .15s",
       }}
       id="katalog"
     >
+      <style>{`select option{background:#191919;}`}</style>
       <div
         style={{
           display: "flex",
@@ -1670,10 +1982,15 @@ const Catalog = ({ products, onDetail }) => {
               marginTop: ".25rem",
             }}
           >
-            Menampilkan {filtered.length} dari {products.length} produk
+            Menampilkan{" "}
+            <span style={{ color: "#CC1F1F", fontWeight: 700 }}>
+              {filtered.length}
+            </span>{" "}
+            dari {products.length} produk
           </div>
         </div>
       </div>
+
       <div
         style={{
           background: "#111",
@@ -1715,6 +2032,7 @@ const Catalog = ({ products, onDetail }) => {
               fontSize: ".87rem",
               padding: ".58rem .8rem .58rem 2.3rem",
               outline: "none",
+              transition: "border-color .3s",
             }}
             onFocus={(e) => (e.target.style.borderColor = "#CC1F1F")}
             onBlur={(e) => (e.target.style.borderColor = "#252525")}
@@ -1756,6 +2074,7 @@ const Catalog = ({ products, onDetail }) => {
                 cursor: "pointer",
                 fontFamily: "'DM Sans',sans-serif",
                 fontWeight: activeType === t.key ? 700 : 500,
+                transition: "all .3s",
               }}
             >
               {t.label}
@@ -1763,7 +2082,21 @@ const Catalog = ({ products, onDetail }) => {
           ))}
         </div>
       </div>
-      {filtered.length === 0 ? (
+
+      {/* Loading skeletons */}
+      {products.length === 0 ? (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill,minmax(265px,1fr))",
+            gap: "1.2rem",
+          }}
+        >
+          {[...Array(6)].map((_, i) => (
+            <CardSkeleton key={i} />
+          ))}
+        </div>
+      ) : filtered.length === 0 ? (
         <div
           style={{
             textAlign: "center",
@@ -1792,7 +2125,7 @@ const Catalog = ({ products, onDetail }) => {
           {filtered.map((p, i) => (
             <ProductCard
               key={p.id || p.name}
-              p={p}
+              p={{ ...p, _query: query }}
               idx={i}
               onDetail={onDetail}
             />
@@ -1803,7 +2136,7 @@ const Catalog = ({ products, onDetail }) => {
   );
 };
 
-// ── MODAL ──
+// ── MODAL ─────────────────────────────────────────────────────────
 const Modal = ({ product, onClose }) => {
   const [mob, setMob] = useState(
     typeof window !== "undefined" ? window.innerWidth < 768 : false,
@@ -1832,8 +2165,10 @@ const Modal = ({ product, onClose }) => {
     window.addEventListener("keydown", esc);
     return () => window.removeEventListener("keydown", esc);
   }, [product, handleClose]);
+
   if (!product) return null;
   const p = product;
+
   return (
     <div
       onClick={(e) => {
@@ -1849,10 +2184,10 @@ const Modal = ({ product, onClose }) => {
         alignItems: "center",
         justifyContent: "center",
         padding: mob ? "0" : "1rem",
-        // animation: "fadeIn .25s ease",
-        animation: closing ? "fadeOut .3s ease" : "fadeIn .25s ease",
+        animation: closing ? "fadeOut .3s ease" : "fadeIn .3s ease",
       }}
     >
+      <style>{`@keyframes fadeIn{from{opacity:0}to{opacity:1}} @keyframes slideUp{from{transform:translateY(28px) scale(.97)}to{transform:translateY(0) scale(1)}}`}</style>
       <div
         style={{
           background: "#111",
@@ -1866,7 +2201,6 @@ const Modal = ({ product, onClose }) => {
           bottom: mob ? 0 : "auto",
           display: "flex",
           flexDirection: mob ? "column" : "row",
-          // animation: "slideUp .3s ease",
           animation: closing ? "slideDown .3s ease" : "slideUp .3s ease",
         }}
       >
@@ -1911,6 +2245,7 @@ const Modal = ({ product, onClose }) => {
               color: "#6e6b67",
               fontSize: ".95rem",
               zIndex: 10,
+              transition: "border-color .3s, color .3s",
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.borderColor = "#CC1F1F";
@@ -1923,6 +2258,7 @@ const Modal = ({ product, onClose }) => {
           >
             ✕
           </button>
+
           <div
             style={{
               fontFamily: "'DM Mono',monospace",
@@ -1989,6 +2325,7 @@ const Modal = ({ product, onClose }) => {
               / unit
             </span>
           </div>
+
           <div
             style={{
               display: "grid",
@@ -1999,7 +2336,7 @@ const Modal = ({ product, onClose }) => {
           >
             {[
               ["Kaliber", p.caliber],
-              ["Sistem", p.system],
+              ["Sistem", p.sistem || p.system],
               ["Magasin", p.mag],
               ["Berat", p.berat],
               ["Jenis", (p.type || "").toUpperCase()],
@@ -2038,6 +2375,7 @@ const Modal = ({ product, onClose }) => {
               </div>
             ))}
           </div>
+
           <div
             style={{
               color: "#6e6b67",
@@ -2053,6 +2391,7 @@ const Modal = ({ product, onClose }) => {
           >
             {p.desc}
           </div>
+
           <div
             style={{ display: "flex", flexDirection: "column", gap: ".6rem" }}
           >
@@ -2072,6 +2411,7 @@ const Modal = ({ product, onClose }) => {
                 borderRadius: 10,
                 fontWeight: 700,
                 fontSize: ".94rem",
+                transition: "background .3s",
               }}
               onMouseOver={(e) =>
                 (e.currentTarget.style.background = "#1aab52")
@@ -2095,6 +2435,7 @@ const Modal = ({ product, onClose }) => {
                 border: "1px solid #252525",
                 cursor: "pointer",
                 fontFamily: "'DM Sans',sans-serif",
+                transition: "border-color .3s, color .3s",
               }}
               onMouseOver={(e) => {
                 e.currentTarget.style.borderColor = "#6e6b67";
@@ -2114,195 +2455,205 @@ const Modal = ({ product, onClose }) => {
   );
 };
 
-// ── LOCATION ──
-const Location = () => (
-  <section
-    style={{ maxWidth: 1400, margin: "0 auto", padding: "2rem 2rem 5rem" }}
-    id="lokasi"
-  >
-    <div
+// ── LOCATION ──────────────────────────────────────────────────────
+const Location = () => {
+  const [ref, visible] = useScrollReveal(0.1);
+  return (
+    <section
+      ref={ref}
       style={{
-        fontFamily: "'Bebas Neue',sans-serif",
-        fontSize: "1.7rem",
-        letterSpacing: "3px",
-        marginBottom: "1.25rem",
+        maxWidth: 1400,
+        margin: "0 auto",
+        padding: "2rem 2rem 5rem",
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(32px)",
+        transition: "opacity .7s ease .1s, transform .7s ease .1s",
       }}
+      id="lokasi"
     >
-      LOKASI TOKO
-    </div>
-    <div
-      style={{
-        background: "#111",
-        border: "1px solid #252525",
-        borderRadius: 14,
-        overflow: "hidden",
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-      }}
-    >
-      <div style={{ padding: "2.5rem" }}>
-        <div
-          style={{
-            fontFamily: "'Bebas Neue',sans-serif",
-            fontSize: "1.5rem",
-            letterSpacing: "3px",
-            color: "#CC1F1F",
-            marginBottom: ".2rem",
-          }}
-        >
-          KAKAK DEWA SPORTS
-        </div>
-        <div
-          style={{
-            color: "#6e6b67",
-            fontSize: ".81rem",
-            marginBottom: "1.75rem",
-          }}
-        >
-          Kunjungi kami — lihat langsung sebelum memutuskan
-        </div>
-        {[
-          {
-            icon: <PinIcon />,
-            text: "Toko Margaria, PV37+J62, Jl. Jend. Sudirman, Ps. Permiri,\nKec. Lubuk Linggau Bar. II, Kota Lubuklinggau,\nSumatera Selatan 31611",
-          },
-          {
-            icon: <ClockIcon />,
-            text: "Senin – Sabtu: 09.00 – 18.00 WIB\nMinggu: 10.00 – 15.00 WIB",
-          },
-          { icon: <PhoneIcon />, text: "0821-2437-7830" },
-        ].map(({ icon, text }) => (
-          <div
-            key={text}
-            style={{
-              display: "flex",
-              gap: ".7rem",
-              alignItems: "flex-start",
-              marginBottom: ".95rem",
-              fontSize: ".86rem",
-              color: "#6e6b67",
-              lineHeight: 1.55,
-            }}
-          >
-            <div style={{ color: "#CC1F1F", flexShrink: 0, marginTop: 2 }}>
-              {icon}
-            </div>
-            <span style={{ whiteSpace: "pre-line" }}>{text}</span>
-          </div>
-        ))}
-        <div
-          style={{
-            display: "flex",
-            gap: ".55rem",
-            marginTop: "1.6rem",
-            flexWrap: "wrap",
-          }}
-        >
-          {[
-            {
-              href: `https://wa.me/${WA}?text=${encodeURIComponent("Halo Kakak Dewa Sports")}`,
-              label: "WhatsApp",
-              icon: <WaIcon size={13} />,
-              wa: true,
-            },
-            {
-              href: "https://www.instagram.com/kakakdewa.sport/",
-              label: "Instagram",
-              icon: <IgIcon />,
-              wa: false,
-            },
-            {
-              href: "https://www.facebook.com/profile.php?id=61588663539438",
-              label: "Facebook",
-              icon: <FbIcon />,
-              wa: false,
-            },
-            {
-              href: "https://www.google.com/maps?q=TOKO+MARGARIA+Lubuklinggau",
-              label: "Maps",
-              icon: <PinIcon />,
-              wa: false,
-            },
-          ].map(({ href, label, icon, wa }) => (
-            <a
-              key={label}
-              href={href}
-              target="_blank"
-              rel="noreferrer"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: ".4rem",
-                padding: ".42rem .85rem",
-                borderRadius: 8,
-                fontSize: ".77rem",
-                fontWeight: 600,
-                textDecoration: "none",
-                border: "1px solid",
-                ...(wa
-                  ? {
-                      background: "#25D366",
-                      color: "#fff",
-                      borderColor: "#25D366",
-                    }
-                  : {
-                      background: "#191919",
-                      color: "#6e6b67",
-                      borderColor: "#252525",
-                    }),
-              }}
-              onMouseOver={(e) => {
-                if (!wa) {
-                  e.currentTarget.style.borderColor = "#CC1F1F";
-                  e.currentTarget.style.color = "#CC1F1F";
-                  e.currentTarget.style.background = "#CC1F1F18";
-                } else {
-                  e.currentTarget.style.borderColor = "#1aab52";
-                  e.currentTarget.style.background = "#1aab52";
-                }
-              }}
-              onMouseOut={(e) => {
-                if (!wa) {
-                  e.currentTarget.style.borderColor = "#252525";
-                  e.currentTarget.style.color = "#6e6b67";
-                  e.currentTarget.style.background = "#191919";
-                } else {
-                  e.currentTarget.style.borderColor = "#25D366";
-                  e.currentTarget.style.background = "#25D366";
-                }
-              }}
-            >
-              {icon} {label}
-            </a>
-          ))}
-        </div>
+      <div
+        style={{
+          fontFamily: "'Bebas Neue',sans-serif",
+          fontSize: "1.7rem",
+          letterSpacing: "3px",
+          marginBottom: "1.25rem",
+        }}
+      >
+        LOKASI TOKO
       </div>
       <div
         style={{
-          borderLeft: "1px solid #252525",
-          display: "flex",
-          alignItems: "stretch",
-          minHeight: 300,
+          background: "#111",
+          border: "1px solid #252525",
+          borderRadius: 14,
+          overflow: "hidden",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
         }}
       >
-        <iframe
-          src="https://maps.google.com/maps?q=TOKO+MARGARIA+Lubuklinggau&output=embed"
+        <div style={{ padding: "2.5rem" }}>
+          <div
+            style={{
+              fontFamily: "'Bebas Neue',sans-serif",
+              fontSize: "1.5rem",
+              letterSpacing: "3px",
+              color: "#CC1F1F",
+              marginBottom: ".2rem",
+            }}
+          >
+            KAKAK DEWA SPORTS
+          </div>
+          <div
+            style={{
+              color: "#6e6b67",
+              fontSize: ".81rem",
+              marginBottom: "1.75rem",
+            }}
+          >
+            Kunjungi kami — lihat langsung sebelum memutuskan
+          </div>
+          {[
+            {
+              icon: <PinIcon />,
+              text: "Toko Margaria, PV37+J62, Jl. Jend. Sudirman, Ps. Permiri,\nKec. Lubuk Linggau Bar. II, Kota Lubuklinggau,\nSumatera Selatan 31611",
+            },
+            {
+              icon: <ClockIcon />,
+              text: "Senin – Sabtu: 09.00 – 18.00 WIB\nMinggu: 10.00 – 15.00 WIB",
+            },
+            { icon: <PhoneIcon />, text: "0821-2437-7830" },
+          ].map(({ icon, text }) => (
+            <div
+              key={text}
+              style={{
+                display: "flex",
+                gap: ".7rem",
+                alignItems: "flex-start",
+                marginBottom: ".95rem",
+                fontSize: ".86rem",
+                color: "#6e6b67",
+                lineHeight: 1.55,
+              }}
+            >
+              <div style={{ color: "#CC1F1F", flexShrink: 0, marginTop: 2 }}>
+                {icon}
+              </div>
+              <span style={{ whiteSpace: "pre-line" }}>{text}</span>
+            </div>
+          ))}
+          <div
+            style={{
+              display: "flex",
+              gap: ".55rem",
+              marginTop: "1.6rem",
+              flexWrap: "wrap",
+            }}
+          >
+            {[
+              {
+                href: `https://wa.me/${WA}?text=${encodeURIComponent("Halo Kakak Dewa Sports")}`,
+                label: "WhatsApp",
+                icon: <WaIcon size={13} />,
+                wa: true,
+              },
+              {
+                href: "https://www.instagram.com/kakakdewa.sport/",
+                label: "Instagram",
+                icon: <IgIcon />,
+                wa: false,
+              },
+              {
+                href: "https://www.facebook.com/profile.php?id=61588663539438",
+                label: "Facebook",
+                icon: <FbIcon />,
+                wa: false,
+              },
+              {
+                href: "https://www.google.com/maps?q=TOKO+MARGARIA+Lubuklinggau",
+                label: "Maps",
+                icon: <PinIcon />,
+                wa: false,
+              },
+            ].map(({ href, label, icon, wa }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: ".4rem",
+                  padding: ".42rem .85rem",
+                  borderRadius: 8,
+                  fontSize: ".77rem",
+                  fontWeight: 600,
+                  textDecoration: "none",
+                  border: "1px solid",
+                  transition: "all .3s",
+                  ...(wa
+                    ? {
+                        background: "#25D366",
+                        color: "#fff",
+                        borderColor: "#25D366",
+                      }
+                    : {
+                        background: "#191919",
+                        color: "#6e6b67",
+                        borderColor: "#252525",
+                      }),
+                }}
+                onMouseOver={(e) => {
+                  if (!wa) {
+                    e.currentTarget.style.borderColor = "#CC1F1F";
+                    e.currentTarget.style.color = "#CC1F1F";
+                    e.currentTarget.style.background = "#CC1F1F18";
+                  } else {
+                    e.currentTarget.style.background = "#1aab52";
+                  }
+                }}
+                onMouseOut={(e) => {
+                  if (!wa) {
+                    e.currentTarget.style.borderColor = "#252525";
+                    e.currentTarget.style.color = "#6e6b67";
+                    e.currentTarget.style.background = "#191919";
+                  } else {
+                    e.currentTarget.style.background = "#25D366";
+                  }
+                }}
+              >
+                {icon} {label}
+              </a>
+            ))}
+          </div>
+        </div>
+        <div
           style={{
-            width: "100%",
-            border: "none",
-            display: "block",
+            borderLeft: "1px solid #252525",
+            display: "flex",
+            alignItems: "stretch",
             minHeight: 300,
           }}
-          allowFullScreen
-          loading="lazy"
-          title="Lokasi Kakak Dewa Sports"
-        />
+        >
+          <iframe
+            src="https://maps.google.com/maps?q=TOKO+MARGARIA+Lubuklinggau&output=embed"
+            style={{
+              width: "100%",
+              border: "none",
+              display: "block",
+              minHeight: 300,
+            }}
+            allowFullScreen
+            loading="lazy"
+            title="Lokasi Kakak Dewa Sports"
+          />
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
-// ── FOOTER ──
+// ── FOOTER ────────────────────────────────────────────────────────
 const Footer = () => (
   <footer style={{ borderTop: "1px solid #252525", padding: "2rem" }}>
     <div
@@ -2345,6 +2696,7 @@ const Footer = () => (
           fontFamily: "'DM Mono',monospace",
           fontSize: ".68rem",
           color: "#333",
+          marginRight: 56,
         }}
       >
         © 2026 <span style={{ color: "#6e6b67" }}>Kakak Dewa Sports</span> ·
@@ -2354,21 +2706,16 @@ const Footer = () => (
   </footer>
 );
 
-// ── APP ──
+// ── APP ───────────────────────────────────────────────────────────
 export default function App() {
   const [modal, setModal] = useState(null);
   const [products, setProducts] = useState([]);
-  // const products = PRODUCTS;
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
-      const data = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setProducts(data);
     });
-
     return () => unsubscribe();
   }, []);
 
@@ -2380,6 +2727,7 @@ export default function App() {
     };
     document.getElementById(map[label])?.scrollIntoView({ behavior: "smooth" });
   };
+
   return (
     <div
       style={{
@@ -2391,13 +2739,15 @@ export default function App() {
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
-        *{margin:0;padding:0;box-sizing:border-box}
-        html{scroll-behavior:smooth}
-        ::-webkit-scrollbar{width:6px}
-        ::-webkit-scrollbar-track{background:#080808}
-        ::-webkit-scrollbar-thumb{background:#252525;border-radius:3px}
-        body{background:#080808}
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; overflow-x:hidden; }
+        body { background:#080808; overflow-x:hidden; }
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-track { background:#080808; }
+        ::-webkit-scrollbar-thumb { background:#252525; border-radius:3px; }
+        ::-webkit-scrollbar-thumb:hover { background:#3a3a3a; }
       `}</style>
+
       <Header onNavClick={scrollTo} />
       <Hero total={products.length} />
       <Carousel products={products} onDetail={setModal} />
@@ -2405,6 +2755,7 @@ export default function App() {
       <Location />
       <Footer />
       <Modal product={modal} onClose={() => setModal(null)} />
+      <FloatingWA />
     </div>
   );
 }
