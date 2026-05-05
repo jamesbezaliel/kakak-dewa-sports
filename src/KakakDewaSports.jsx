@@ -255,6 +255,8 @@ const Header = ({ onNavClick }) => {
   const [mob, setMob] = useState(
     typeof window !== "undefined" ? window.innerWidth < 768 : false,
   );
+  const [menuClosing, setMenuClosing] = useState(false);
+
   useEffect(() => {
     const fn = () => setMob(window.innerWidth < 768);
     window.addEventListener("resize", fn);
@@ -408,57 +410,98 @@ const Header = ({ onNavClick }) => {
             </a>
           </nav>
         )}
+
+        {/* Mobile: WA pill + hamburger */}
         {mob && (
-          <div style={{ display: "flex", alignItems: "center", gap: ".6rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
             <a
-              href={`https://wa.me/${WA}`}
+              href={`https://wa.me/${WA}?text=${encodeURIComponent("Halo Kakak Dewa Sports, saya ingin bertanya.")}`}
               target="_blank"
               rel="noreferrer"
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: ".35rem",
+                gap: "0.35rem",
                 background: "#25D366",
                 color: "#fff",
-                padding: ".38rem .75rem",
+                padding: "0.38rem 0.75rem",
                 borderRadius: 8,
-                fontSize: ".75rem",
+                fontSize: "0.75rem",
                 fontWeight: 700,
                 textDecoration: "none",
+                whiteSpace: "nowrap",
+                transition: "all .2s",
               }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.background = "#1aab52")
-              }
-              onMouseOut={(e) => (e.currentTarget.style.background = "#25D366")}
+              onMouseOver={(e) => {
+                e.currentTarget.style.background = "#1aab52";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.background = "#25D366";
+              }}
             >
               <WaIcon size={12} /> WA
             </a>
+
+            {/* Hamburger button */}
             <button
-              onClick={() => setMenuOpen((v) => !v)}
+              onClick={() => {
+                if (menuOpen) {
+                  setMenuClosing(true);
+                  setTimeout(() => {
+                    setMenuClosing(false);
+                  }, 300);
+                  setMenuOpen(false);
+                } else {
+                  setMenuOpen(true);
+                }
+              }}
               style={{
-                background: "none",
-                border: "1px solid #252525",
-                borderRadius: 8,
+                position: "relative",
                 width: 38,
                 height: 38,
+                borderRadius: 8,
+                border: "1px solid #252525",
+                background: "none",
                 display: "flex",
-                flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: "5px",
                 cursor: "pointer",
-                padding: "0 10px",
+                flexShrink: 0,
               }}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.borderColor = "#CC1F1F")
+              }
+              onMouseOut={(e) =>
+                (e.currentTarget.style.borderColor = "#252525")
+              }
+              aria-label="Menu"
             >
               {[0, 1, 2].map((i) => (
                 <span
                   key={i}
                   style={{
-                    display: "block",
-                    width: "100%",
+                    position: "absolute",
+                    width: 18,
                     height: 2,
                     background: "#f0ede8",
-                    borderRadius: 1,
+                    borderRadius: 2,
+                    transition: "all .3s cubic-bezier(.4,0,.2,1)",
+
+                    ...(i === 0 && {
+                      transform: menuOpen
+                        ? "rotate(45deg)"
+                        : "translateY(-6px)",
+                    }),
+
+                    ...(i === 1 && {
+                      opacity: menuOpen ? 0 : 1,
+                    }),
+
+                    ...(i === 2 && {
+                      transform: menuOpen
+                        ? "rotate(-45deg)"
+                        : "translateY(6px)",
+                    }),
                   }}
                 />
               ))}
@@ -466,7 +509,7 @@ const Header = ({ onNavClick }) => {
           </div>
         )}
       </header>
-      {mob && menuOpen && (
+      {mob && (menuOpen || menuClosing) && (
         <div
           style={{
             position: "fixed",
@@ -481,6 +524,11 @@ const Header = ({ onNavClick }) => {
             display: "flex",
             flexDirection: "column",
             gap: ".25rem",
+
+            // 🔥 ANIMATION
+            animation: menuClosing
+              ? "menuUp .3s ease forwards"
+              : "menuDown .3s ease forwards",
           }}
         >
           {["Best Seller", "Katalog", "Lokasi"].map((l) => (
@@ -1243,13 +1291,14 @@ const ProductThumb = ({ p }) => {
 
 const ModalImageSlider = ({ p }) => {
   const [errs, setErrs] = useState({});
+  const [idx, setIdx] = useState(0);
+  const slugs = p.images?.length ? p.images : [];
+  const total = slugs.length;
+
   useEffect(() => {
     setIdx(0);
     setErrs({});
   }, [p.id]);
-  const slugs = p.images?.length ? p.images : [];
-  const [idx, setIdx] = useState(0);
-  const total = slugs.length;
 
   const src = slugs[idx];
 
@@ -1585,10 +1634,14 @@ const Catalog = ({ products, onDetail }) => {
     });
   return (
     <section
-      style={{ maxWidth: 1400, margin: "0 auto", padding: "3rem 2rem" }}
+      style={{
+        maxWidth: 1400,
+        margin: "0 auto",
+        padding: "3rem 2rem",
+        scrollMarginTop: 40,
+      }}
       id="katalog"
     >
-      <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}} select option{background:#191919;}`}</style>
       <div
         style={{
           display: "flex",
@@ -1755,6 +1808,16 @@ const Modal = ({ product, onClose }) => {
   const [mob, setMob] = useState(
     typeof window !== "undefined" ? window.innerWidth < 768 : false,
   );
+  const [closing, setClosing] = useState(false);
+
+  const handleClose = () => {
+    setClosing(true);
+    setTimeout(() => {
+      onClose();
+      setClosing(false);
+    }, 300);
+  };
+
   useEffect(() => {
     const fn = () => setMob(window.innerWidth < 768);
     window.addEventListener("resize", fn);
@@ -1764,17 +1827,17 @@ const Modal = ({ product, onClose }) => {
     if (product) document.body.style.overflow = "hidden";
     else document.body.style.overflow = "";
     const esc = (e) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") handleClose();
     };
     window.addEventListener("keydown", esc);
     return () => window.removeEventListener("keydown", esc);
-  }, [product, onClose]);
+  }, [product, handleClose]);
   if (!product) return null;
   const p = product;
   return (
     <div
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (e.target === e.currentTarget) handleClose();
       }}
       style={{
         position: "fixed",
@@ -1786,10 +1849,10 @@ const Modal = ({ product, onClose }) => {
         alignItems: "center",
         justifyContent: "center",
         padding: mob ? "0" : "1rem",
-        animation: "fadeIn .25s ease",
+        // animation: "fadeIn .25s ease",
+        animation: closing ? "fadeOut .3s ease" : "fadeIn .25s ease",
       }}
     >
-      <style>{`@keyframes fadeIn{from{opacity:0}to{opacity:1}} @keyframes slideUp{from{transform:translateY(28px) scale(.97)}to{transform:translateY(0) scale(1)}}`}</style>
       <div
         style={{
           background: "#111",
@@ -1803,7 +1866,8 @@ const Modal = ({ product, onClose }) => {
           bottom: mob ? 0 : "auto",
           display: "flex",
           flexDirection: mob ? "column" : "row",
-          animation: "slideUp .3s ease",
+          // animation: "slideUp .3s ease",
+          animation: closing ? "slideDown .3s ease" : "slideUp .3s ease",
         }}
       >
         <div
@@ -1830,7 +1894,7 @@ const Modal = ({ product, onClose }) => {
           }}
         >
           <button
-            onClick={onClose}
+            onClick={handleClose}
             style={{
               position: "absolute",
               top: "1rem",
@@ -2017,7 +2081,7 @@ const Modal = ({ product, onClose }) => {
               <WaIcon size={18} /> Pesan via WhatsApp
             </a>
             <button
-              onClick={onClose}
+              onClick={handleClose}
               style={{
                 display: "flex",
                 alignItems: "center",
