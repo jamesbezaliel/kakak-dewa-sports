@@ -1771,7 +1771,7 @@ const ProductCard = ({ p, idx, onDetail }) => {
       }}
       onMouseOver={(e) => {
         e.currentTarget.style.borderColor = "#CC1F1F";
-        e.currentTarget.style.boxShadow = "0 16px 48px rgba(204, 31, 31, 0.23)";
+        e.currentTarget.style.boxShadow = "0 16px 48px rgba(204, 31, 31, 0.15)";
       }}
       onMouseOut={(e) => {
         e.currentTarget.style.borderColor = "#252525";
