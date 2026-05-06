@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import KakakDewaLogo from "./assets/kakakdewa-logo.png";
 import { onSnapshot, collection } from "firebase/firestore";
 import { db } from "./firebase";
@@ -37,24 +37,29 @@ const waLink = (p) => {
 
 // ── SCROLL REVEAL HOOK ─────────────────────────────────────────────
 // Dipakai untuk animasi "fade up" saat elemen masuk viewport
-const useScrollReveal = (threshold = 0.12) => {
+const useScrollReveal = () => {
   const ref = useRef(null);
+  const hasShown = useRef(false);
   const [visible, setVisible] = useState(false);
+
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          obs.disconnect();
-        }
-      },
-      { threshold },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [threshold]);
+    const observer = new IntersectionObserver(([entry]) => {
+      console.log("INTERSECT:", entry.isIntersecting);
+
+      if (entry.isIntersecting && !hasShown.current) {
+        hasShown.current = true;
+        setVisible(true);
+        observer.disconnect();
+      }
+    });
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, []); // 🔥 balik ke kosong (INI PENTING)
+
   return [ref, visible];
 };
 
@@ -517,6 +522,8 @@ const Header = ({ onNavClick }) => {
     const onScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("resize", onResize);
     window.addEventListener("scroll", onScroll, { passive: true });
+    // Set initial state
+    setScrolled(window.scrollY > 10);
     return () => {
       window.removeEventListener("resize", onResize);
       window.removeEventListener("scroll", onScroll);
@@ -544,8 +551,10 @@ const Header = ({ onNavClick }) => {
     <>
       <header
         style={{
-          position: "sticky",
+          position: "fixed",
           top: 0,
+          left: 0,
+          right: 0,
           zIndex: 500,
           background: "rgba(8,8,8,0.97)",
           backdropFilter: "blur(20px)",
@@ -876,7 +885,7 @@ const Header = ({ onNavClick }) => {
 
 // ── HERO ──────────────────────────────────────────────────────────
 const Hero = ({ total }) => {
-  const [ref, visible] = useScrollReveal(0.05);
+  const [ref, visible] = useScrollReveal();
   return (
     <section
       ref={ref}
@@ -1087,16 +1096,19 @@ const Hero = ({ total }) => {
 
 // ── CAROUSEL ──────────────────────────────────────────────────────
 const Carousel = ({ products, onDetail }) => {
+  const [ref, visible] = useScrollReveal();
   const [idx, setIdx] = useState(0);
   const [dragging, setDragging] = useState(false);
   const dragStart = useRef(null);
   const timerRef = useRef(null);
-  const [ref, visible] = useScrollReveal(0.1);
+  const [mob, setMob] = useState(
+    typeof window !== "undefined" ? window.innerWidth < 768 : false,
+  );
 
-  const bsList =
-    products.filter((p) => p.isBestSeller).length > 0
-      ? products.filter((p) => p.isBestSeller)
-      : products.slice(0, 5);
+  const bsList = useMemo(() => {
+    const list = products.filter((p) => p.isBestSeller);
+    return list.length > 0 ? list : products.slice(0, 5);
+  }, [products]);
   const total = bsList.length;
 
   const go = useCallback(
@@ -1148,7 +1160,7 @@ const Carousel = ({ products, onDetail }) => {
   ];
 
   // Show skeleton while loading
-  if (products.length === 0) return <CarouselSkeleton />;
+  const isLoading = products.length === 0;
 
   return (
     <div
@@ -1158,361 +1170,378 @@ const Carousel = ({ products, onDetail }) => {
         margin: "0 auto",
         padding: "3rem 2rem 2rem",
         scrollMarginTop: 40,
-        // opacity: visible ? 1 : 0,
-        // transform: visible ? "translateY(0)" : "translateY(32px)",
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(32px)",
         transition: "opacity .7s ease .1s, transform .7s ease .1s",
       }}
       id="best-seller"
     >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "2rem",
-        }}
-      >
-        <div
-          style={{
-            fontFamily: "'Bebas Neue',sans-serif",
-            fontSize: "1.7rem",
-            letterSpacing: "3px",
-          }}
-        >
-          BEST SELLER
-        </div>
-        <span
-          style={{
-            fontFamily: "'DM Mono',monospace",
-            fontSize: ".63rem",
-            letterSpacing: "2px",
-            color: "#CC1F1F",
-            border: "1px solid rgba(204,31,31,.3)",
-            background: "rgba(204,31,31,.1)",
-            padding: ".22rem .6rem",
-            borderRadius: 3,
-            textTransform: "uppercase",
-          }}
-        >
-          🔥 Paling Diminati
-        </span>
-      </div>
-
-      {/* 3D Stage */}
-      <div
-        onMouseDown={onDragStart}
-        onMouseUp={onDragEnd}
-        onMouseLeave={onDragEnd}
-        onTouchStart={onDragStart}
-        onTouchEnd={onDragEnd}
-        style={{
-          position: "relative",
-          height: 420,
-          perspective: "1200px",
-          cursor: dragging ? "grabbing" : "grab",
-          userSelect: "none",
-          marginBottom: "2rem",
-        }}
-      >
-        {[
-          { dir: -1, side: "left", label: "‹" },
-          { dir: 1, side: "right", label: "›" },
-        ].map(({ dir, side, label }) => (
-          <button
-            key={side}
-            onClick={() => go(idx + dir)}
+      {isLoading ? (
+        <CarouselSkeleton />
+      ) : (
+        <>
+          <div
             style={{
-              position: "absolute",
-              [side]: 0,
-              top: "50%",
-              transform: "translateY(-50%)",
-              zIndex: 200,
-              background: "rgba(255,255,255,0.08)",
-              border: "1px solid rgba(255,255,255,0.15)",
-              borderRadius: "50%",
-              width: 48,
-              height: 48,
               display: "flex",
+              justifyContent: "space-between",
               alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              color: "#fff",
-              fontSize: "1.4rem",
-              backdropFilter: "blur(8px)",
-              transition: "background .3s",
+              marginBottom: "2rem",
             }}
-            onMouseOver={(e) =>
-              (e.currentTarget.style.background = "rgba(204,31,31,.6)")
-            }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.background = "rgba(255,255,255,0.08)")
-            }
           >
-            {label}
-          </button>
-        ))}
-
-        {bsList.map((p, i) => {
-          const raw = (((i - idx + total) % total) + total) % total;
-          const norm = raw > total / 2 ? raw - total : raw;
-          const cfg = CFG[String(norm)];
-          if (!cfg) return null;
-          const isActive = norm === 0;
-          const [bg, accent] = CARD_COLORS[i % CARD_COLORS.length];
-
-          return (
             <div
-              key={p.id}
-              onClick={() => (Math.abs(norm) > 0 ? go(i) : onDetail(p))}
               style={{
-                position: "absolute",
-                left: "50%",
-                top: "50%",
-                width: 380,
-                height: 380,
-                marginLeft: -190,
-                marginTop: -190,
-                borderRadius: 18,
-                overflow: "hidden",
-                cursor: "pointer",
-                transform: `translateX(${cfg.x}px) scale(${cfg.scale}) rotateY(${cfg.ry}deg) translateZ(${cfg.z}px)`,
-                opacity: cfg.op,
-                filter: cfg.blur > 0 ? `blur(${cfg.blur}px)` : "none",
-                transition: dragging
-                  ? "none"
-                  : "all .55s cubic-bezier(0.25,0.46,0.45,0.94)",
-                zIndex: isActive ? 100 : Math.abs(norm) === 1 ? 50 : 10,
-                transformStyle: "preserve-3d",
-                boxShadow: isActive
-                  ? "0 32px 80px rgba(0,0,0,.7), 0 0 0 1px rgba(204,31,31,.35)"
-                  : "0 16px 40px rgba(0,0,0,.45)",
+                fontFamily: "'Bebas Neue',sans-serif",
+                fontSize: "1.7rem",
+                letterSpacing: "3px",
               }}
             >
-              {/* Background: foto atau gradient+emoji */}
-              <div
+              BEST SELLER
+            </div>
+            <span
+              style={{
+                fontFamily: "'DM Mono',monospace",
+                fontSize: ".63rem",
+                letterSpacing: "2px",
+                color: "#CC1F1F",
+                border: "1px solid rgba(204,31,31,.3)",
+                background: "rgba(204,31,31,.1)",
+                padding: ".22rem .6rem",
+                borderRadius: 3,
+                textTransform: "uppercase",
+              }}
+            >
+              🔥 Paling Diminati
+            </span>
+          </div>
+
+          {/* 3D Stage */}
+          <div
+            onMouseDown={onDragStart}
+            onMouseUp={onDragEnd}
+            onMouseLeave={onDragEnd}
+            onTouchStart={onDragStart}
+            onTouchEnd={onDragEnd}
+            style={{
+              position: "relative",
+              height: 420,
+              perspective: "1200px",
+              cursor: dragging ? "grabbing" : "grab",
+              userSelect: "none",
+              marginBottom: "2rem",
+            }}
+          >
+            {[
+              { dir: -1, side: "left", label: "‹" },
+              { dir: 1, side: "right", label: "›" },
+            ].map(({ dir, side, label }) => (
+              <button
+                key={side}
+                onClick={() => go(idx + dir)}
                 style={{
                   position: "absolute",
-                  inset: 0,
-                  background: `radial-gradient(ellipse at 50% 35%, ${accent}40 0%, ${bg} 65%)`,
+                  [side]: 0,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  zIndex: 200,
+                  background: "rgba(255,255,255,0.08)",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  borderRadius: "50%",
+                  width: 48,
+                  height: 48,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  color: "#fff",
+                  fontSize: "1.4rem",
+                  backdropFilter: "blur(8px)",
+                  transition: "background .3s",
                 }}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.background = "rgba(204,31,31,.6)")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.background = "rgba(255,255,255,0.08)")
+                }
               >
-                {p.images?.[0] ? (
-                  <img
-                    src={p.images[0]}
-                    alt={p.name}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      objectPosition: "center",
-                      display: "block",
-                      opacity: isActive ? 1 : 0.75,
-                      filter: isActive ? "none" : "grayscale(20%)",
-                      transition: "opacity .4s, filter .4s",
-                    }}
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                      e.currentTarget.nextSibling.style.display = "flex";
-                    }}
-                  />
-                ) : null}
-                <div
-                  style={{
-                    display: p.images?.[0] ? "none" : "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: "100%",
-                    height: "100%",
-                    fontSize: "7.5rem",
-                    opacity: isActive ? 0.9 : 0.7,
-                    transition: "opacity .4s",
-                  }}
-                >
-                  {p.emoji}
-                </div>
-              </div>
+                {label}
+              </button>
+            ))}
 
-              {/* Grid texture */}
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  backgroundImage: `linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px)`,
-                  backgroundSize: "24px 24px",
-                }}
-              />
+            {bsList.map((p, i) => {
+              const raw = (((i - idx + total) % total) + total) % total;
+              const norm = raw > total / 2 ? raw - total : raw;
+              const cfg = CFG[String(norm)];
+              if (!cfg) return null;
+              const isActive = norm === 0;
+              const [bg, accent] = CARD_COLORS[i % CARD_COLORS.length];
 
-              {/* Active glow */}
-              {isActive && (
+              return (
                 <div
+                  key={p.id}
+                  onClick={() => (Math.abs(norm) > 0 ? go(i) : onDetail(p))}
                   style={{
                     position: "absolute",
-                    inset: 0,
-                    background:
-                      "radial-gradient(ellipse at 50% 100%, rgba(204,31,31,.22) 0%, transparent 65%)",
-                    pointerEvents: "none",
-                  }}
-                />
-              )}
-
-              {/* Text overlay */}
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background:
-                    "linear-gradient(to top, rgba(0,0,0,.95) 0%, rgba(0,0,0,.6) 42%, rgba(0,0,0,.1) 65%, transparent 100%)",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "flex-end",
-                  padding: isActive ? "1.4rem" : "1rem",
-                }}
-              >
-                {isActive && (
-                  <span
-                    style={{
-                      fontFamily: "'DM Mono',monospace",
-                      fontSize: ".55rem",
-                      letterSpacing: "2px",
-                      color: "#CC1F1F",
-                      background: "rgba(204,31,31,.18)",
-                      border: "1px solid rgba(204,31,31,.4)",
-                      borderRadius: 3,
-                      padding: ".15rem .5rem",
-                      textTransform: "uppercase",
-                      marginBottom: ".5rem",
-                      width: "fit-content",
-                    }}
-                  >
-                    🔥 Best Seller #{i + 1}
-                  </span>
-                )}
-                <div
-                  style={{
-                    fontFamily: "'Bebas Neue',sans-serif",
-                    fontSize: isActive ? "1.55rem" : "1.05rem",
-                    letterSpacing: "2px",
-                    color: "#fff",
-                    lineHeight: 1.1,
-                    marginBottom: ".35rem",
-                    textShadow: "0 2px 8px rgba(0,0,0,.9)",
+                    left: "50%",
+                    top: "50%",
+                    width: mob ? 260 : 380,
+                    height: mob ? 260 : 380,
+                    marginLeft: mob ? -130 : -190,
+                    marginTop: mob ? -130 : -190,
+                    borderRadius: 18,
+                    overflow: "hidden",
+                    cursor: "pointer",
+                    transform: `translateX(${cfg.x}px) scale(${cfg.scale}) rotateY(${cfg.ry}deg) translateZ(${cfg.z}px)`,
+                    opacity: cfg.op,
+                    filter: cfg.blur > 0 ? `blur(${cfg.blur}px)` : "none",
+                    transition: dragging
+                      ? "none"
+                      : "all .55s cubic-bezier(0.25,0.46,0.45,0.94)",
+                    zIndex: isActive ? 100 : Math.abs(norm) === 1 ? 50 : 10,
+                    transformStyle: "preserve-3d",
+                    boxShadow: isActive
+                      ? "0 32px 80px rgba(0,0,0,.7), 0 0 0 1px rgba(204,31,31,.35)"
+                      : "0 16px 40px rgba(0,0,0,.45)",
                   }}
                 >
-                  {p.name}
-                </div>
-                {isActive && (
-                  <>
+                  {/* Background: foto atau gradient+emoji */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      background: `radial-gradient(ellipse at 50% 35%, ${accent}40 0%, ${bg} 65%)`,
+                    }}
+                  >
+                    {p.images?.[0] ? (
+                      <img
+                        src={p.images[0]}
+                        alt={p.name}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          objectPosition: "center",
+                          display: "block",
+                          opacity: isActive ? 1 : 0.75,
+                          filter: isActive ? "none" : "grayscale(20%)",
+                          transition: "opacity .4s, filter .4s",
+                        }}
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                          e.currentTarget.nextSibling.style.display = "flex";
+                        }}
+                      />
+                    ) : null}
                     <div
                       style={{
-                        fontSize: ".76rem",
-                        color: "rgba(255,255,255,.68)",
-                        lineHeight: 1.55,
-                        marginBottom: ".85rem",
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                      }}
-                    >
-                      {p.desc}
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
+                        display: p.images?.[0] ? "none" : "flex",
                         alignItems: "center",
-                        justifyContent: "space-between",
-                        flexWrap: "wrap",
-                        gap: ".5rem",
+                        justifyContent: "center",
+                        width: "100%",
+                        height: "100%",
+                        fontSize: "7.5rem",
+                        opacity: isActive ? 0.9 : 0.7,
+                        transition: "opacity .4s",
                       }}
                     >
+                      {p.emoji}
+                    </div>
+                  </div>
+
+                  {/* Grid texture */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      backgroundImage: `linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px)`,
+                      backgroundSize: "24px 24px",
+                    }}
+                  />
+
+                  {/* Active glow */}
+                  {isActive && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        background:
+                          "radial-gradient(ellipse at 50% 100%, rgba(204,31,31,.22) 0%, transparent 65%)",
+                        pointerEvents: "none",
+                      }}
+                    />
+                  )}
+
+                  {/* Text overlay */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      background:
+                        "linear-gradient(to top, rgba(0,0,0,.95) 0%, rgba(0,0,0,.6) 42%, rgba(0,0,0,.1) 65%, transparent 100%)",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "flex-end",
+                      padding: isActive ? "1.4rem" : "1rem",
+                    }}
+                  >
+                    {isActive && (
                       <span
                         style={{
-                          fontFamily: "'Bebas Neue',sans-serif",
-                          fontSize: "1.5rem",
+                          fontFamily: "'DM Mono',monospace",
+                          fontSize: mob ? ".4rem" : ".55rem",
+                          fontWeight: 700,
+                          letterSpacing: "2px",
                           color: "#CC1F1F",
-                          letterSpacing: "1px",
-                          textShadow: "0 0 20px rgba(204,31,31,.35)",
+                          background: "rgba(204,31,31,.18)",
+                          border: "1px solid rgba(204,31,31,.4)",
+                          borderRadius: 3,
+                          padding: ".15rem .5rem",
+                          textTransform: "uppercase",
+                          marginBottom: mob ? ".3rem" : ".5rem",
+                          width: "fit-content",
+                        }}
+                      >
+                        🔥 Best Seller #{i + 1}
+                      </span>
+                    )}
+                    {isActive && (
+                      <div
+                        style={{
+                          fontFamily: "'Bebas Neue',sans-serif",
+                          fontSize: mob
+                            ? isActive
+                              ? "1.05rem"
+                              : ".9rem"
+                            : isActive
+                              ? "1.55rem"
+                              : "1.05rem",
+                          letterSpacing: "2px",
+                          color: "#fff",
+                          lineHeight: 1.1,
+                          marginBottom: mob ? ".2rem" : ".35rem",
+                          textShadow: "0 2px 8px rgba(0,0,0,.9)",
+                        }}
+                      >
+                        {p.name}
+                      </div>
+                    )}
+                    {isActive && (
+                      <>
+                        <div
+                          style={{
+                            fontSize: mob ? ".6rem" : ".76rem",
+                            color: "rgba(255,255,255,.68)",
+                            lineHeight: 1.55,
+                            marginBottom: mob ? ".5rem" : ".85rem",
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                          }}
+                        >
+                          {p.desc}
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            flexWrap: "wrap",
+                            gap: ".5rem",
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontFamily: "'Bebas Neue',sans-serif",
+                              fontSize: mob ? "1rem" : "1.5rem",
+                              color: "#CC1F1F",
+                              letterSpacing: "1px",
+                              textShadow: "0 0 20px rgba(204,31,31,.35)",
+                            }}
+                          >
+                            {fmt(p.price)}
+                          </span>
+                          <a
+                            href={waLink(p)}
+                            target="_blank"
+                            rel="noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: ".35rem",
+                              background: "#25D366",
+                              color: "#fff",
+                              textDecoration: "none",
+                              padding: mob ? ".35rem .65rem" : ".45rem .9rem",
+                              borderRadius: mob ? 6 : 8,
+                              fontWeight: 700,
+                              fontSize: mob ? ".6rem" : ".78rem",
+                              transition: "background .3s",
+                            }}
+                            onMouseOver={(e) =>
+                              (e.currentTarget.style.background = "#1aab52")
+                            }
+                            onMouseOut={(e) =>
+                              (e.currentTarget.style.background = "#25D366")
+                            }
+                          >
+                            <WaIcon size={13} /> Pesan
+                          </a>
+                        </div>
+                      </>
+                    )}
+                    {Math.abs(norm) === 1 && (
+                      <div
+                        style={{
+                          fontSize: ".7rem",
+                          color: "rgba(17, 9, 9, 0.45)",
+                          fontFamily: "'DM Mono',monospace",
                         }}
                       >
                         {fmt(p.price)}
-                      </span>
-                      <a
-                        href={waLink(p)}
-                        target="_blank"
-                        rel="noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: ".35rem",
-                          background: "#25D366",
-                          color: "#fff",
-                          textDecoration: "none",
-                          padding: ".45rem .9rem",
-                          borderRadius: 8,
-                          fontWeight: 700,
-                          fontSize: ".78rem",
-                          transition: "background .3s",
-                        }}
-                        onMouseOver={(e) =>
-                          (e.currentTarget.style.background = "#1aab52")
-                        }
-                        onMouseOut={(e) =>
-                          (e.currentTarget.style.background = "#25D366")
-                        }
-                      >
-                        <WaIcon size={13} /> Pesan
-                      </a>
-                    </div>
-                  </>
-                )}
-                {Math.abs(norm) === 1 && (
-                  <div
-                    style={{
-                      fontSize: ".7rem",
-                      color: "rgba(255,255,255,.45)",
-                      fontFamily: "'DM Mono',monospace",
-                    }}
-                  >
-                    {fmt(p.price)}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-              {isActive && (
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    borderRadius: 18,
-                    border: "1px solid rgba(204,31,31,.5)",
-                    pointerEvents: "none",
-                  }}
-                />
-              )}
-            </div>
-          );
-        })}
-      </div>
+                  {isActive && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        borderRadius: 18,
+                        border: "1px solid rgba(204,31,31,.5)",
+                        pointerEvents: "none",
+                      }}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
 
-      {/* Dots */}
-      <div style={{ display: "flex", justifyContent: "center", gap: ".4rem" }}>
-        {bsList.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => go(i)}
-            style={{
-              width: i === idx ? 22 : 8,
-              height: 8,
-              borderRadius: 4,
-              background: i === idx ? "#CC1F1F" : "rgba(255,255,255,.2)",
-              border: "none",
-              cursor: "pointer",
-              transition: "all .3s",
-              padding: 0,
-            }}
-          />
-        ))}
-      </div>
+          {/* Dots */}
+          <div
+            style={{ display: "flex", justifyContent: "center", gap: ".4rem" }}
+          >
+            {bsList.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => go(i)}
+                style={{
+                  width: i === idx ? 22 : 8,
+                  height: 8,
+                  borderRadius: 4,
+                  background: i === idx ? "#CC1F1F" : "rgba(255,255,255,.2)",
+                  border: "none",
+                  cursor: "pointer",
+                  transition: "all .3s",
+                  padding: 0,
+                }}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 };
@@ -1574,6 +1603,7 @@ const ProductThumb = ({ p }) => {
 const ModalImageSlider = ({ p }) => {
   const [idx, setIdx] = useState(0); // ← FIXED: useState dulu sebelum logic
   const [errs, setErrs] = useState({});
+
   const slugs = p.images?.length ? p.images : [];
   const total = slugs.length;
   const src = slugs[idx];
@@ -1752,7 +1782,7 @@ const ModalImageSlider = ({ p }) => {
 
 // ── PRODUCT CARD ──────────────────────────────────────────────────
 const ProductCard = ({ p, idx, onDetail }) => {
-  const [ref, visible] = useScrollReveal(0.08);
+  const [ref, visible] = useScrollReveal();
   return (
     <div
       ref={ref}
@@ -1917,7 +1947,7 @@ const Catalog = ({ products, onDetail }) => {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("");
   const [activeType, setActiveType] = useState("all");
-  const [ref, visible] = useScrollReveal(0.05);
+  const [ref, visible] = useScrollReveal();
 
   const filtered = products
     .filter((p) => {
@@ -2457,7 +2487,7 @@ const Modal = ({ product, onClose }) => {
 
 // ── LOCATION ──────────────────────────────────────────────────────
 const Location = () => {
-  const [ref, visible] = useScrollReveal(0.1);
+  const [ref, visible] = useScrollReveal();
   return (
     <section
       ref={ref}
@@ -2696,7 +2726,7 @@ const Footer = () => (
           fontFamily: "'DM Mono',monospace",
           fontSize: ".68rem",
           color: "#333",
-          marginRight: 56,
+          marginRight: 50,
         }}
       >
         © 2026 <span style={{ color: "#6e6b67" }}>Kakak Dewa Sports</span> ·
@@ -2735,6 +2765,7 @@ export default function App() {
         color: "#f0ede8",
         minHeight: "100vh",
         fontFamily: "'DM Sans',sans-serif",
+        paddingTop: 66,
       }}
     >
       <style>{`
