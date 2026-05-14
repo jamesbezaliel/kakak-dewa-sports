@@ -3,6 +3,7 @@ import KakakDewaLogo from "./assets/kakakdewa-logo.png";
 import { onSnapshot, collection } from "firebase/firestore";
 import { db } from "./firebase";
 import "./App.css";
+import { getProducts } from "./services/products";
 
 const WA = "6282124377830";
 const TOKO = "Kakak Dewa Sports";
@@ -536,7 +537,7 @@ const Header = ({ onNavClick }) => {
   };
   const SOCIALS = [
     {
-      href: "https://www.instagram.com/kakakdewa.sport/",
+      href: "https://www.instagram.com/kakakdewa.senapan",
       icon: <IgIcon />,
       title: "Instagram",
     },
@@ -1223,7 +1224,7 @@ const Carousel = ({ products, onDetail }) => {
             onTouchEnd={onDragEnd}
             style={{
               position: "relative",
-              height: 420,
+              height: mob ? 300 : 420,
               perspective: "1200px",
               cursor: dragging ? "grabbing" : "grab",
               userSelect: "none",
@@ -1434,7 +1435,7 @@ const Carousel = ({ products, onDetail }) => {
                             lineHeight: 1.55,
                             marginBottom: mob ? ".5rem" : ".85rem",
                             display: "-webkit-box",
-                            WebkitLineClamp: 2,
+                            WebkitLineClamp: mob ? 1 : 2,
                             WebkitBoxOrient: "vertical",
                             overflow: "hidden",
                           }}
@@ -2587,7 +2588,7 @@ const Location = () => {
                 wa: true,
               },
               {
-                href: "https://www.instagram.com/kakakdewa.sport/",
+                href: "https://www.instagram.com/kakakdewa.senapan/",
                 label: "Instagram",
                 icon: <IgIcon />,
                 wa: false,
@@ -2741,12 +2742,16 @@ export default function App() {
   const [modal, setModal] = useState(null);
   const [products, setProducts] = useState([]);
 
+  // useEffect(() => {
+  //   const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
+  //     const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  //     setProducts(data);
+  //   });
+  //   return () => unsubscribe();
+  // }, []);
+
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
-      const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      setProducts(data);
-    });
-    return () => unsubscribe();
+    getProducts().then(setProducts);
   }, []);
 
   const scrollTo = (label) => {
